@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import SkillsManager from './SkillsManager';
 
 const ProfileSettings = () => {
   const [settings, setSettings] = useState({
@@ -226,6 +227,11 @@ const ProfileSettings = () => {
           </button>
         </div>
       </form>
+
+      {/* Skills Management Section */}
+      <div className="mt-12">
+        <SkillsManager />
+      </div>
     </div>
   );
 };

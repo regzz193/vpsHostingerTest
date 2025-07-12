@@ -152,9 +152,16 @@ const Portfolio = () => {
     about_me_3: "When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or sharing my knowledge through writing and mentoring."
   });
 
-  // Fetch settings on component mount
+  const [skills, setSkills] = useState({
+    frontend: [],
+    backend: [],
+    devops: []
+  });
+
+  // Fetch settings and skills on component mount
   useEffect(() => {
     fetchSettings();
+    fetchSkills();
   }, []);
 
   const fetchSettings = async () => {
@@ -166,6 +173,15 @@ const Portfolio = () => {
       }));
     } catch (error) {
       console.error('Error fetching settings:', error);
+    }
+  };
+
+  const fetchSkills = async () => {
+    try {
+      const response = await axios.get('/api/skills/grouped');
+      setSkills(response.data.data);
+    } catch (error) {
+      console.error('Error fetching skills:', error);
     }
   };
 
@@ -243,22 +259,19 @@ const Portfolio = () => {
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Frontend Development</h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  React.js & Next.js
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Tailwind CSS
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  JavaScript/TypeScript
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Responsive Design
-                </li>
+                {skills.frontend && skills.frontend.length > 0 ? (
+                  skills.frontend.map(skill => (
+                    <li key={skill.id} className="flex items-center">
+                      <span className="mr-2">•</span>
+                      {skill.name}
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-center">
+                    <span className="mr-2">•</span>
+                    Loading skills...
+                  </li>
+                )}
               </ul>
             </div>
 
@@ -271,22 +284,19 @@ const Portfolio = () => {
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Backend Development</h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  PHP & Laravel
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Node.js & Express
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  RESTful APIs
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Database Design
-                </li>
+                {skills.backend && skills.backend.length > 0 ? (
+                  skills.backend.map(skill => (
+                    <li key={skill.id} className="flex items-center">
+                      <span className="mr-2">•</span>
+                      {skill.name}
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-center">
+                    <span className="mr-2">•</span>
+                    Loading skills...
+                  </li>
+                )}
               </ul>
             </div>
 
@@ -299,22 +309,19 @@ const Portfolio = () => {
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">DevOps & Tools</h3>
               <ul className="space-y-2 text-gray-600 dark:text-gray-300">
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Git & GitHub
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Docker
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  CI/CD Pipelines
-                </li>
-                <li className="flex items-center">
-                  <span className="mr-2">•</span>
-                  Linux Server Administration
-                </li>
+                {skills.devops && skills.devops.length > 0 ? (
+                  skills.devops.map(skill => (
+                    <li key={skill.id} className="flex items-center">
+                      <span className="mr-2">•</span>
+                      {skill.name}
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-center">
+                    <span className="mr-2">•</span>
+                    Loading skills...
+                  </li>
+                )}
               </ul>
             </div>
           </div>
