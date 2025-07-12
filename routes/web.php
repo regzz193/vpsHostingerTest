@@ -27,3 +27,5 @@ Route::get('/api/skills/{id}', [SkillController::class, 'show']);
 Route::put('/api/skills/{id}', [SkillController::class, 'update']);
 Route::delete('/api/skills/{id}', [SkillController::class, 'destroy']);
 Route::post('/api/skills/reorder', [SkillController::class, 'reorder']);
+
+//testing
