@@ -158,6 +158,44 @@ const Portfolio = () => {
     devops: []
   });
 
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+
+  // Handle scroll events for navbar styling and active section
+  useEffect(() => {
+    const handleScroll = () => {
+      // Add shadow to navbar when scrolled
+      setScrolled(window.scrollY > 50);
+
+      // Determine active section based on scroll position
+      const sections = ['home', 'about', 'skills', 'projects', 'blog', 'contact'];
+      const sectionElements = sections.map(id => document.getElementById(id));
+
+      const currentSection = sectionElements.reduce((acc, section) => {
+        if (!section) return acc;
+        const rect = section.getBoundingClientRect();
+        const offset = 100; // Offset to trigger section change earlier
+
+        if (rect.top <= offset && rect.bottom > offset) {
+          return section.id;
+        }
+        return acc;
+      }, 'home');
+
+      setActiveSection(currentSection);
+    };
+
+    // Add smooth scrolling
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.documentElement.style.scrollBehavior = '';
+    };
+  }, []);
+
   // Fetch settings and skills on component mount
   useEffect(() => {
     fetchSettings();
@@ -185,30 +223,145 @@ const Portfolio = () => {
     }
   };
 
+  // Close mobile menu when a link is clicked
+  const handleNavLinkClick = () => {
+    setIsNavOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Fixed Navigation */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-md'
+            : 'bg-transparent'
+        }`}
+        aria-label="Main navigation"
+      >
+        <div className="container mx-auto px-6">
+          <div className="flex items-center justify-between py-4">
+            {/* Logo/Name */}
+            <a
+              href="#home"
+              className={`text-xl font-bold transition-colors duration-300 ${
+                scrolled
+                  ? 'text-gray-900 dark:text-white'
+                  : 'text-white'
+              }`}
+              aria-label="Reggie Ambrocio - Back to top"
+            >
+              Reggie Ambrocio
+            </a>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {['home', 'about', 'skills', 'projects', 'blog', 'contact'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item}`}
+                  className={`capitalize transition-colors duration-300 ${
+                    activeSection === item
+                      ? scrolled
+                        ? 'text-purple-600 dark:text-purple-400 font-medium'
+                        : 'text-white font-medium'
+                      : scrolled
+                        ? 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                        : 'text-white/80 hover:text-white'
+                  }`}
+                  aria-current={activeSection === item ? 'page' : undefined}
+                  onClick={handleNavLinkClick}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              type="button"
+              className={`md:hidden p-2 rounded-md ${
+                scrolled
+                  ? 'text-gray-700 dark:text-gray-300'
+                  : 'text-white'
+              }`}
+              onClick={() => setIsNavOpen(!isNavOpen)}
+              aria-expanded={isNavOpen}
+              aria-controls="mobile-menu"
+              aria-label="Toggle menu"
+            >
+              {isNavOpen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          <div
+            id="mobile-menu"
+            className={`md:hidden transition-all duration-300 overflow-hidden ${
+              isNavOpen ? 'max-h-96 pb-6' : 'max-h-0'
+            }`}
+            aria-hidden={!isNavOpen}
+          >
+            <div className="flex flex-col space-y-4">
+              {['home', 'about', 'skills', 'projects', 'blog', 'contact'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item}`}
+                  className={`capitalize py-2 px-4 rounded-md transition-colors duration-300 ${
+                    activeSection === item
+                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 font-medium'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  }`}
+                  aria-current={activeSection === item ? 'page' : undefined}
+                  onClick={handleNavLinkClick}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <header className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+      <header id="home" className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white">
         <div className="absolute inset-0 bg-[url('/img/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
-        <div className="relative container mx-auto px-6 py-16 md:py-24 lg:py-32 flex flex-col items-center text-center">
+        <div className="relative container mx-auto px-6 py-24 md:py-32 lg:py-40 flex flex-col items-center text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
             Reggie Ambrocio
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-2xl">
             Full Stack Developer & Digital Craftsman
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 justify-center">
             <a
               href="#contact"
               className="bg-white text-purple-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition duration-300"
+              aria-label="Contact Me - Jump to contact form"
             >
               Contact Me
             </a>
             <a
               href="#projects"
               className="bg-transparent border border-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition duration-300"
+              aria-label="View My Work - Jump to projects section"
             >
               View My Work
+            </a>
+            <a
+              href="#blog"
+              className="bg-transparent border border-white hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition duration-300"
+              aria-label="Read My Blog - Jump to blog section"
+            >
+              Read My Blog
             </a>
           </div>
         </div>
@@ -223,10 +376,22 @@ const Portfolio = () => {
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
               <img
-                src="https://ui-avatars.com/api/?name=Reggie+Ambrocio&size=500&background=8B5CF6&color=fff&bold=true"
+                src="/images/_CDR9065.png"
                 alt="Reggie Ambrocio"
                 className="rounded-lg shadow-lg w-full max-w-md mx-auto"
               />
+              <div className="mt-6 text-center">
+                <a
+                  href="/cv/Blue Simple Professional CV Resume.pdf"
+                  download
+                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-300"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download CV
+                </a>
+              </div>
             </div>
             <div className="md:w-1/2">
               <p className="text-lg mb-6 text-gray-600 dark:text-gray-300">
@@ -416,13 +581,137 @@ const Portfolio = () => {
         </div>
       </section>
 
+      {/* Blog Section */}
+      <section id="blog" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
+            Blog & Articles
+          </h2>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-lg text-center text-gray-600 dark:text-gray-300 mb-12">
+              I share my insights and experiences in web development, best practices, and emerging technologies.
+            </p>
+
+            <div className="space-y-10">
+              {/* Blog Post 1 */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>June 15, 2023</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
+                    Building Scalable React Applications with Custom Hooks
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    Custom hooks are one of React's most powerful features, allowing developers to extract and reuse stateful logic across components. In this article, I explore how to create and implement custom hooks to improve code reusability, readability, and maintainability in large-scale React applications.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">React</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">JavaScript</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Web Development</span>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                  >
+                    Read Full Article
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {/* Blog Post 2 */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>May 22, 2023</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
+                    Optimizing Laravel API Performance for High-Traffic Applications
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    As applications scale, API performance becomes increasingly critical. In this deep dive, I share techniques I've implemented to optimize Laravel API endpoints, including efficient database queries, caching strategies, and asynchronous processing. Learn how these optimizations reduced response times by 60% in a recent project.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Laravel</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">API</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Performance</span>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                  >
+                    Read Full Article
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {/* Blog Post 3 */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>April 10, 2023</span>
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
+                    From Concept to Deployment: Building a Full-Stack E-Commerce Platform
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">
+                    In this case study, I walk through the entire process of creating a modern e-commerce platform from initial concept to production deployment. I discuss the technical decisions made along the way, challenges encountered, and solutions implemented. This article provides insights into architecture planning, technology selection, and development workflow.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Full-Stack</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">E-Commerce</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Case Study</span>
+                  </div>
+                  <a
+                    href="#"
+                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                  >
+                    Read Full Article
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 text-center">
+              <a
+                href="#"
+                className="inline-flex items-center px-6 py-3 border border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition duration-300"
+              >
+                View All Articles
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
-      <section id="contact" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
+      <section id="contact" className="py-16 md:py-24 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
             Get In Touch
           </h2>
-          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 p-8">
             <ContactForm />
           </div>
 

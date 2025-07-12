@@ -4,13 +4,32 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Reggie Ambrocio - Full Stack Web Developer specializing in Laravel, React, and modern web technologies. View my portfolio, projects, and skills.">
+        <meta name="theme-color" content="#8b5cf6">
+        <meta name="color-scheme" content="light dark">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url('/') }}">
+        <meta property="og:title" content="Reggie Ambrocio | Full Stack Web Developer">
+        <meta property="og:description" content="Full Stack Developer specializing in Laravel, React, and modern web technologies. View my portfolio, projects, and skills.">
+        <meta property="og:image" content="{{ url('/images/og-image.jpg') }}">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="{{ url('/') }}">
+        <meta name="twitter:title" content="Reggie Ambrocio | Full Stack Web Developer">
+        <meta name="twitter:description" content="Full Stack Developer specializing in Laravel, React, and modern web technologies. View my portfolio, projects, and skills.">
+        <meta name="twitter:image" content="{{ url('/images/og-image.jpg') }}">
+
+        <!-- Performance optimizations -->
+        <link rel="preload" as="font" href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" crossorigin>
         <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22256%22 height=%22256%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%238b5cf6%22></rect><path fill=%22%23ffffff%22 d=%22M30 40 L70 40 L70 42 L30 42 Z M30 50 L70 50 L70 52 L30 52 Z M30 60 L70 60 L70 62 L30 62 Z%22></path></svg>">
 
         <title>Reggie Ambrocio | Full Stack Web Developer</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet">
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
