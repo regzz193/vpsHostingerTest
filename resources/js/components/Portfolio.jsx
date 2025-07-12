@@ -143,6 +143,32 @@ const ContactForm = () => {
 };
 
 const Portfolio = () => {
+  const [settings, setSettings] = useState({
+    email: 'reggie.ambrocio@example.com',
+    phone: '+1 (415) 555-0123',
+    location: 'San Francisco, CA',
+    about_me_1: "Hello! I'm Reggie, a passionate full-stack developer with expertise in building modern web applications. I specialize in creating responsive, user-friendly interfaces and robust backend systems.",
+    about_me_2: "With a strong foundation in Laravel, React, and Tailwind CSS, I bring ideas to life through clean, efficient code and thoughtful design. I'm constantly learning and exploring new technologies to enhance my skills and deliver better solutions.",
+    about_me_3: "When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or sharing my knowledge through writing and mentoring."
+  });
+
+  // Fetch settings on component mount
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await axios.get('/api/profile-settings');
+      setSettings(prevSettings => ({
+        ...prevSettings,
+        ...response.data.data
+      }));
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
@@ -188,17 +214,13 @@ const Portfolio = () => {
             </div>
             <div className="md:w-1/2">
               <p className="text-lg mb-6 text-gray-600 dark:text-gray-300">
-                Hello! I'm Reggie, a passionate full-stack developer with expertise in building modern web applications.
-                I specialize in creating responsive, user-friendly interfaces and robust backend systems.
+                {settings.about_me_1}
               </p>
               <p className="text-lg mb-6 text-gray-600 dark:text-gray-300">
-                With a strong foundation in Laravel, React, and Tailwind CSS, I bring ideas to life through clean,
-                efficient code and thoughtful design. I'm constantly learning and exploring new technologies to
-                enhance my skills and deliver better solutions.
+                {settings.about_me_2}
               </p>
               <p className="text-lg text-gray-600 dark:text-gray-300">
-                When I'm not coding, you can find me exploring new technologies, contributing to open-source projects,
-                or sharing my knowledge through writing and mentoring.
+                {settings.about_me_3}
               </p>
             </div>
           </div>
@@ -405,7 +427,7 @@ const Portfolio = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Email</h3>
-              <p className="text-gray-600 dark:text-gray-300">reggie.ambrocio@example.com</p>
+              <p className="text-gray-600 dark:text-gray-300">{settings.email}</p>
             </div>
 
             <div>
@@ -415,7 +437,7 @@ const Portfolio = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Phone</h3>
-              <p className="text-gray-600 dark:text-gray-300">+1 (415) 555-0123</p>
+              <p className="text-gray-600 dark:text-gray-300">{settings.phone}</p>
             </div>
 
             <div>
@@ -426,7 +448,7 @@ const Portfolio = () => {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Location</h3>
-              <p className="text-gray-600 dark:text-gray-300">San Francisco, CA</p>
+              <p className="text-gray-600 dark:text-gray-300">{settings.location}</p>
             </div>
           </div>
         </div>
