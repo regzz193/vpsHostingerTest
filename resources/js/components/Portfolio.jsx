@@ -1,4 +1,146 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+
+// Contact Form Component
+const ContactForm = () => {
+  const [formData, setFormData] = useState({
+    sender: '',
+    email: '',
+    subject: '',
+    content: ''
+  });
+
+  const [status, setStatus] = useState({
+    submitting: false,
+    success: false,
+    error: null
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setStatus({ submitting: true, success: false, error: null });
+
+    try {
+      await axios.post('/api/messages', {
+        sender: formData.sender,
+        email: formData.email,
+        subject: formData.subject,
+        content: formData.content
+      });
+
+      // Reset form and show success message
+      setFormData({ sender: '', email: '', subject: '', content: '' });
+      setStatus({ submitting: false, success: true, error: null });
+
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setStatus(prevStatus => ({ ...prevStatus, success: false }));
+      }, 5000);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setStatus({
+        submitting: false,
+        success: false,
+        error: error.response?.data?.errors || 'Failed to send message. Please try again.'
+      });
+    }
+  };
+
+  return (
+    <form className="space-y-6" onSubmit={handleSubmit}>
+      {status.success && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Success!</strong>
+          <span className="block sm:inline"> Your message has been sent successfully.</span>
+        </div>
+      )}
+
+      {status.error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error!</strong>
+          <span className="block sm:inline"> {typeof status.error === 'string' ? status.error : 'Failed to send message. Please try again.'}</span>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="sender" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Name
+          </label>
+          <input
+            type="text"
+            id="sender"
+            value={formData.sender}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            placeholder="Your name"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
+            placeholder="Your email"
+            required
+          />
+        </div>
+      </div>
+      <div>
+        <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Subject
+        </label>
+        <input
+          type="text"
+          id="subject"
+          value={formData.subject}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="Subject"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Message
+        </label>
+        <textarea
+          id="content"
+          value={formData.content}
+          onChange={handleChange}
+          rows="5"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
+          placeholder="Your message"
+          required
+        ></textarea>
+      </div>
+      <button
+        type="submit"
+        disabled={status.submitting}
+        className={`w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-md hover:opacity-90 transition duration-300 ${
+          status.submitting ? 'opacity-70 cursor-not-allowed' : ''
+        }`}
+      >
+        {status.submitting ? 'Sending...' : 'Send Message'}
+      </button>
+    </form>
+  );
+};
 
 const Portfolio = () => {
   return (
@@ -252,60 +394,7 @@ const Portfolio = () => {
             Get In Touch
           </h2>
           <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="Your name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                    placeholder="Your email"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Subject"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows="5"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Your message"
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 px-6 rounded-md hover:opacity-90 transition duration-300"
-              >
-                Send Message
-              </button>
-            </form>
+            <ContactForm />
           </div>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
