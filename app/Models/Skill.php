@@ -24,6 +24,18 @@ class Skill extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'proficiency' => 'integer',
+        'order' => 'integer',
+        'to_study' => 'boolean',
+        'study_notes' => 'string',
+    ];
+
+    /**
      * Get skills by category.
      *
      * @param string $category

@@ -42,7 +42,13 @@ class SkillController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Pre-process study_notes to ensure it's a string
+        $data = $request->all();
+        if (isset($data['study_notes'])) {
+            $data['study_notes'] = is_null($data['study_notes']) ? '' : (string) $data['study_notes'];
+        }
+
+        $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'category' => 'required|string|in:frontend,backend,devops',
             'order' => 'nullable|integer',
@@ -52,8 +58,18 @@ class SkillController extends Controller
         ]);
 
         if ($validator->fails()) {
+            // Log validation errors for debugging
+            \Log::error('Validation failed in skill creation', [
+                'method' => __METHOD__,
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $data
+            ]);
+
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        // Use the sanitized data for the rest of the method
+        $request->replace($data);
 
         // If order is not provided, put it at the end of the category
         if (!$request->has('order')) {
@@ -89,7 +105,13 @@ class SkillController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        // Pre-process study_notes to ensure it's a string
+        $data = $request->all();
+        if (isset($data['study_notes'])) {
+            $data['study_notes'] = is_null($data['study_notes']) ? '' : (string) $data['study_notes'];
+        }
+
+        $validator = Validator::make($data, [
             'name' => 'sometimes|required|string|max:255',
             'category' => 'sometimes|required|string|in:frontend,backend,devops',
             'order' => 'sometimes|required|integer',
@@ -99,8 +121,19 @@ class SkillController extends Controller
         ]);
 
         if ($validator->fails()) {
+            // Log validation errors for debugging
+            \Log::error('Validation failed in skill update', [
+                'method' => __METHOD__,
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $data,
+                'skill_id' => $id
+            ]);
+
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        // Use the sanitized data for the rest of the method
+        $request->replace($data);
 
         $skill = Skill::findOrFail($id);
         $skill->update($request->all());
@@ -189,13 +222,30 @@ class SkillController extends Controller
      */
     public function updateStudyNotes(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        // Pre-process study_notes to ensure it's a string
+        $data = $request->all();
+        if (isset($data['study_notes'])) {
+            $data['study_notes'] = is_null($data['study_notes']) ? '' : (string) $data['study_notes'];
+        }
+
+        $validator = Validator::make($data, [
             'study_notes' => 'required|string',
         ]);
 
         if ($validator->fails()) {
+            // Log validation errors for debugging
+            \Log::error('Validation failed in study notes update', [
+                'method' => __METHOD__,
+                'errors' => $validator->errors()->toArray(),
+                'request_data' => $data,
+                'skill_id' => $id
+            ]);
+
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        // Use the sanitized data for the rest of the method
+        $request->replace($data);
 
         $skill = Skill::findOrFail($id);
         $skill->study_notes = $request->study_notes;
