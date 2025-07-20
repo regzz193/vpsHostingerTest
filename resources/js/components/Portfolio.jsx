@@ -143,7 +143,7 @@ const ContactForm = () => {
 };
 
 // Developer Badge Component
-const DeveloperBadge = () => {
+const DeveloperBadge = ({ skillAnalytics }) => {
   // Calculate years of experience since 2023
   const calculateExperience = () => {
     const startYear = 2023;
@@ -151,8 +151,67 @@ const DeveloperBadge = () => {
     return Math.max(0, currentYear - startYear);
   };
 
-  // Determine developer level based on years of experience
-  const getDeveloperLevel = (years) => {
+  // Determine developer level based on skill analytics or fallback to years of experience
+  const getDeveloperLevel = () => {
+    // If skill analytics data is available, use it to determine the level
+    if (skillAnalytics && skillAnalytics.senior_level_analysis) {
+      const { level } = skillAnalytics.senior_level_analysis;
+
+      if (level === 'Senior') {
+        return {
+          level: 'Senior Developer',
+          gradient: 'from-purple-400 to-purple-600',
+          textColor: 'text-white',
+          bgColor: 'bg-gradient-to-r from-purple-400 to-purple-600',
+          darkBgColor: 'dark:from-purple-500 dark:to-purple-700',
+          borderColor: 'border-purple-300',
+          darkBorderColor: 'dark:border-purple-600',
+          shadowColor: 'shadow-purple-500/20',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+            </svg>
+          )
+        };
+      } else if (level === 'Mid-level') {
+        return {
+          level: 'Mid Level Developer',
+          gradient: 'from-blue-400 to-blue-600',
+          textColor: 'text-white',
+          bgColor: 'bg-gradient-to-r from-blue-400 to-blue-600',
+          darkBgColor: 'dark:from-blue-500 dark:to-blue-700',
+          borderColor: 'border-blue-300',
+          darkBorderColor: 'dark:border-blue-600',
+          shadowColor: 'shadow-blue-500/20',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+            </svg>
+          )
+        };
+      } else {
+        return {
+          level: 'Junior Developer',
+          gradient: 'from-green-400 to-green-600',
+          textColor: 'text-white',
+          bgColor: 'bg-gradient-to-r from-green-400 to-green-600',
+          darkBgColor: 'dark:from-green-500 dark:to-green-700',
+          borderColor: 'border-green-300',
+          darkBorderColor: 'dark:border-green-600',
+          shadowColor: 'shadow-green-500/20',
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
+            </svg>
+          )
+        };
+      }
+    }
+
+    // Fallback to years of experience if skill analytics data is not available
+    const years = calculateExperience();
+
     if (years < 0) { // This condition will never be true with the current calculation
       return {
         level: 'Junior Developer',
@@ -205,8 +264,7 @@ const DeveloperBadge = () => {
     }
   };
 
-  const years = calculateExperience();
-  const { level, gradient, textColor, bgColor, darkBgColor, borderColor, darkBorderColor, shadowColor, icon } = getDeveloperLevel(years);
+  const { level, gradient, textColor, bgColor, darkBgColor, borderColor, darkBorderColor, shadowColor, icon } = getDeveloperLevel();
 
   return (
     <div className="absolute top-4 right-4 z-10">
@@ -247,6 +305,10 @@ const Portfolio = () => {
     devops: []
   });
 
+  const [projects, setProjects] = useState([]);
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [skillAnalytics, setSkillAnalytics] = useState(null);
+
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
@@ -285,14 +347,28 @@ const Portfolio = () => {
     };
   }, []);
 
-  // Fetch settings and skills on component mount
+  // Fetch settings, skills, projects, blog posts, and skill analytics on component mount
   useEffect(() => {
     fetchSettings();
     fetchSkills();
+    fetchProjects();
+    fetchBlogPosts();
+    fetchSkillAnalytics();
 
     // Track page visit
     trackPageVisit();
   }, []);
+
+  // Fetch skill analytics data
+  const fetchSkillAnalytics = async () => {
+    try {
+      const response = await axios.get('/api/skill-analytics');
+      setSkillAnalytics(response.data);
+      console.log('Skill analytics data:', response.data);
+    } catch (error) {
+      console.error('Error fetching skill analytics:', error);
+    }
+  };
 
   // Track page visit for analytics
   const trackPageVisit = async () => {
@@ -324,6 +400,28 @@ const Portfolio = () => {
       setSkills(response.data.data);
     } catch (error) {
       console.error('Error fetching skills:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('/api/featured-projects');
+      // Filter only active projects
+      const activeProjects = response.data.data.filter(project => project.is_active);
+      setProjects(activeProjects);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  const fetchBlogPosts = async () => {
+    try {
+      const response = await axios.get('/api/blog-posts');
+      // Filter only active blog posts
+      const activePosts = response.data.data.filter(post => post.is_active);
+      setBlogPosts(activePosts);
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
     }
   };
 
@@ -380,6 +478,19 @@ const Portfolio = () => {
                   {item}
                 </a>
               ))}
+              <a
+                href="/me-administrator"
+                className={`transition-colors duration-300 ${
+                  scrolled
+                    ? 'text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                    : 'text-white/80 hover:text-white'
+                }`}
+                aria-label="Admin Dashboard"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                </svg>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
@@ -431,6 +542,16 @@ const Portfolio = () => {
                   {item}
                 </a>
               ))}
+              <a
+                href="/me-administrator"
+                className="py-2 px-4 rounded-md transition-colors duration-300 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center"
+                onClick={handleNavLinkClick}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clipRule="evenodd" />
+                </svg>
+                Admin Dashboard
+              </a>
             </div>
           </div>
         </div>
@@ -523,7 +644,7 @@ const Portfolio = () => {
             <div className="md:w-1/2">
               <div className="relative w-full max-w-md mx-auto group perspective">
                 <div className="relative rounded-xl overflow-hidden transform transition-transform duration-700 group-hover:rotate-y-12 shadow-2xl">
-                  <DeveloperBadge />
+                  <DeveloperBadge skillAnalytics={skillAnalytics} />
                   <img
                     src="/images/_CDR9065.png"
                     alt="Reggie Ambrocio"
@@ -745,9 +866,164 @@ const Portfolio = () => {
       {/* Skills Section */}
       <section id="skills" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center text-gray-800 dark:text-white">
             My Skills
           </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 text-center mb-12 max-w-3xl mx-auto">
+            A comprehensive overview of my technical abilities and expertise across different domains.
+          </p>
+
+          {/* Skill Analytics Summary */}
+          {skillAnalytics && skillAnalytics.senior_level_analysis && (
+            <div className="mb-16 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 max-w-5xl mx-auto">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-purple-600 dark:text-purple-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M6 6a3 3 0 013-3h2a3 3 0 013 3v2a3 3 0 01-3 3H9a3 3 0 01-3-3V6z" clipRule="evenodd" />
+                  <path d="M13 10a3 3 0 013 3v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1a3 3 0 013-3h6z" />
+                </svg>
+                Developer Level Assessment
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+                <div className="md:col-span-1">
+                  <div className="flex flex-col items-center">
+                    <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-2xl font-bold ${
+                      skillAnalytics.senior_level_analysis.level === 'Senior'
+                        ? 'bg-green-500'
+                        : skillAnalytics.senior_level_analysis.level === 'Mid-level'
+                        ? 'bg-yellow-500'
+                        : 'bg-blue-500'
+                    }`}>
+                      {skillAnalytics.senior_level_analysis.scores.overall}%
+                    </div>
+                    <h4 className="text-lg font-bold text-center text-gray-800 dark:text-white mt-3">
+                      {skillAnalytics.senior_level_analysis.level} Developer
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="md:col-span-3">
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    {skillAnalytics.senior_level_analysis.analysis}
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div>
+                      <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Frontend</h5>
+                      <div className="flex items-center">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
+                          <div
+                            className={`h-2.5 rounded-full ${
+                              skillAnalytics.senior_level_analysis.scores.frontend >= 80
+                                ? 'bg-green-500'
+                                : skillAnalytics.senior_level_analysis.scores.frontend >= 50
+                                ? 'bg-yellow-500'
+                                : 'bg-blue-500'
+                            }`}
+                            style={{ width: `${skillAnalytics.senior_level_analysis.scores.frontend}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                          {skillAnalytics.senior_level_analysis.scores.frontend}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Backend</h5>
+                      <div className="flex items-center">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
+                          <div
+                            className={`h-2.5 rounded-full ${
+                              skillAnalytics.senior_level_analysis.scores.backend >= 80
+                                ? 'bg-green-500'
+                                : skillAnalytics.senior_level_analysis.scores.backend >= 50
+                                ? 'bg-yellow-500'
+                                : 'bg-blue-500'
+                            }`}
+                            style={{ width: `${skillAnalytics.senior_level_analysis.scores.backend}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                          {skillAnalytics.senior_level_analysis.scores.backend}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">DevOps</h5>
+                      <div className="flex items-center">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
+                          <div
+                            className={`h-2.5 rounded-full ${
+                              skillAnalytics.senior_level_analysis.scores.devops >= 80
+                                ? 'bg-green-500'
+                                : skillAnalytics.senior_level_analysis.scores.devops >= 50
+                                ? 'bg-yellow-500'
+                                : 'bg-blue-500'
+                            }`}
+                            style={{ width: `${skillAnalytics.senior_level_analysis.scores.devops}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                          {skillAnalytics.senior_level_analysis.scores.devops}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Top Skills Section (if analytics data is available) */}
+          {skillAnalytics && skillAnalytics.top_skills && skillAnalytics.top_skills.length > 0 && (
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white">
+                Top Skills
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                {skillAnalytics.top_skills.slice(0, 6).map((skill, index) => (
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-5 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-lg">
+                    <div className="flex items-center mb-3">
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3"
+                        style={{
+                          backgroundColor:
+                            skill.category === 'frontend' ? 'rgba(124, 58, 237, 0.8)' :
+                            skill.category === 'backend' ? 'rgba(79, 70, 229, 0.8)' :
+                            'rgba(37, 99, 235, 0.8)'
+                        }}
+                      >
+                        {index + 1}
+                      </div>
+                      <h4 className="text-lg font-semibold text-gray-800 dark:text-white">{skill.name}</h4>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Proficiency</span>
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{skill.proficiency || 100}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div
+                          className={`h-2.5 rounded-full ${
+                            skill.proficiency >= 80 ? 'bg-green-500' :
+                            skill.proficiency >= 50 ? 'bg-yellow-500' :
+                            'bg-blue-500'
+                          }`}
+                          style={{ width: `${skill.proficiency || 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize mt-3">
+                      Category: {skill.category}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Frontend Skills */}
             <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
@@ -841,157 +1117,147 @@ const Portfolio = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {/* Project 1 */}
-            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn">
-              <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
-                <span className="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  Featured
-                </span>
-              </div>
-              <div className="relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                  alt="E-Commerce Platform"
-                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                  <div className="p-4 w-full">
-                    <div className="flex space-x-3 justify-center">
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+            {projects.length > 0 ? (
+              projects.map((project, index) => (
+                <div
+                  key={project.id}
+                  className={`group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn ${
+                    index === 1 ? 'animation-delay-200' : index === 2 ? 'animation-delay-300' : ''
+                  }`}
+                >
+                  {index === 0 && (
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                      <span className="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
-                      </a>
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </a>
+                        Featured
+                      </span>
+                    </div>
+                  )}
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={project.image_url || `https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80`}
+                      alt={project.title}
+                      className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                      <div className="p-4 w-full">
+                        <div className="flex space-x-3 justify-center">
+                          {project.project_url && (
+                            <a href={project.project_url} target="_blank" rel="noopener noreferrer" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                              </svg>
+                            </a>
+                          )}
+                          {project.github_url && (
+                            <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">E-Commerce Platform</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  A full-featured online store with product management, cart functionality, and secure checkout. Includes user authentication, payment processing, and order tracking.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">React</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">MySQL</span>
-                </div>
-                <a
-                  href="#"
-                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                >
-                  <span>View Project</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* Project 2 */}
-            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-200">
-              <div className="relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1540350394557-8d14678e7f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                  alt="Task Management App"
-                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                  <div className="p-4 w-full">
-                    <div className="flex space-x-3 justify-center">
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                        </svg>
-                      </a>
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </a>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">{project.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                      {project.description}
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies && project.technologies.map((tech, techIndex) => (
+                        <span
+                          key={techIndex}
+                          className={`px-3 py-1 ${
+                            techIndex % 3 === 0 ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300' :
+                            techIndex % 3 === 1 ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300' :
+                            'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300'
+                          } text-xs font-medium rounded-full`}
+                        >
+                          {tech}
+                        </span>
+                      ))}
                     </div>
+                    {(project.project_url || project.github_url) && (
+                      <a
+                        href={project.project_url || project.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
+                      >
+                        <span>View Project</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Task Management App</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  A collaborative task management tool with real-time updates and team collaboration features. Includes task assignment, progress tracking, and deadline notifications.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Next.js</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">Tailwind</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Firebase</span>
-                </div>
-                <a
-                  href="#"
-                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                >
-                  <span>View Project</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            {/* Project 3 */}
-            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-300">
-              <div className="relative overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                  alt="Analytics Dashboard"
-                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
-                  <div className="p-4 w-full">
-                    <div className="flex space-x-3 justify-center">
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                        </svg>
-                      </a>
-                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      </a>
+              ))
+            ) : (
+              // Fallback content if no projects are available
+              <>
+                {/* Project 1 */}
+                <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn">
+                  <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                    <span className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      Featured
+                    </span>
+                  </div>
+                  <div className="relative overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
+                      alt="E-Commerce Platform"
+                      className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                      <div className="p-4 w-full">
+                        <div className="flex space-x-3 justify-center">
+                          <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                              <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                            </svg>
+                          </a>
+                          <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">E-Commerce Platform</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                      A full-featured online store with product management, cart functionality, and secure checkout. Includes user authentication, payment processing, and order tracking.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">React</span>
+                      <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">MySQL</span>
+                    </div>
+                    <a
+                      href="#"
+                      className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
+                    >
+                      <span>View Project</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Analytics Dashboard</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                  A comprehensive analytics dashboard with data visualization and reporting capabilities. Features interactive charts, customizable reports, and real-time data monitoring.
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Vue.js</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">Express</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">MongoDB</span>
-                </div>
-                <a
-                  href="#"
-                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                >
-                  <span>View Project</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           <div className="text-center mt-12">
@@ -1022,142 +1288,133 @@ const Portfolio = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {/* Blog Post 1 */}
-            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn flex flex-col h-full">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
-                  alt="React Custom Hooks"
-                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
-                  <span className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
-                    </svg>
-                    Popular
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
-                  <div className="flex items-center text-xs text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>June 15, 2023</span>
+            {blogPosts.length > 0 ? (
+              blogPosts.map((post, index) => (
+                <div
+                  key={post.id}
+                  className={`group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn ${
+                    index === 1 ? 'animation-delay-200' : index === 2 ? 'animation-delay-300' : ''
+                  } flex flex-col h-full`}
+                >
+                  <div className="relative">
+                    <img
+                      src={post.image_url || `https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80`}
+                      alt={post.title}
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    {post.is_featured && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                        <span className="flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                          </svg>
+                          Popular
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
+                      <div className="flex items-center text-xs text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                      {post.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
+                      {post.content}
+                    </p>
+                    <div className="mt-auto">
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {post.tags && post.tags.map((tag, tagIndex) => (
+                          <span
+                            key={tagIndex}
+                            className={`px-3 py-1 ${
+                              tagIndex % 3 === 0 ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300' :
+                              tagIndex % 3 === 1 ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300' :
+                              'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300'
+                            } text-xs font-medium rounded-full`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      {post.url && (
+                        <a
+                          href={post.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
+                        >
+                          <span>Read Full Article</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
-                  Building Scalable React Applications with Custom Hooks
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
-                  Custom hooks are one of React's most powerful features, allowing developers to extract and reuse stateful logic across components. In this article, I explore how to create and implement custom hooks to improve code reusability, readability, and maintainability in large-scale React applications.
-                </p>
-                <div className="mt-auto">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">React</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">JavaScript</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Web Development</span>
+              ))
+            ) : (
+              // Fallback content if no blog posts are available
+              <>
+                {/* Blog Post 1 */}
+                <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn flex flex-col h-full">
+                  <div className="relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
+                      alt="React Custom Hooks"
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                      <span className="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                        </svg>
+                        Popular
+                      </span>
+                    </div>
+                    <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
+                      <div className="flex items-center text-xs text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>June 15, 2023</span>
+                      </div>
+                    </div>
                   </div>
-                  <a
-                    href="#"
-                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                  >
-                    <span>Read Full Article</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Blog Post 2 */}
-            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-200 flex flex-col h-full">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
-                  alt="Laravel API Performance"
-                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
-                  <div className="flex items-center text-xs text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>May 22, 2023</span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
-                  Optimizing Laravel API Performance for High-Traffic Applications
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
-                  As applications scale, API performance becomes increasingly critical. In this deep dive, I share techniques I've implemented to optimize Laravel API endpoints, including efficient database queries, caching strategies, and asynchronous processing. Learn how these optimizations reduced response times by 60% in a recent project.
-                </p>
-                <div className="mt-auto">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">API</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Performance</span>
-                  </div>
-                  <a
-                    href="#"
-                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                  >
-                    <span>Read Full Article</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Blog Post 3 */}
-            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-300 flex flex-col h-full">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1523800503107-5bc3ba2a6f81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
-                  alt="E-Commerce Platform Case Study"
-                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
-                  <div className="flex items-center text-xs text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>April 10, 2023</span>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                      Building Scalable React Applications with Custom Hooks
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
+                      Custom hooks are one of React's most powerful features, allowing developers to extract and reuse stateful logic across components. In this article, I explore how to create and implement custom hooks to improve code reusability, readability, and maintainability in large-scale React applications.
+                    </p>
+                    <div className="mt-auto">
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">React</span>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">JavaScript</span>
+                        <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Web Development</span>
+                      </div>
+                      <a
+                        href="#"
+                        className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
+                      >
+                        <span>Read Full Article</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="p-6 flex-1 flex flex-col">
-                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
-                  From Concept to Deployment: Building a Full-Stack E-Commerce Platform
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
-                  In this case study, I walk through the entire process of creating a modern e-commerce platform from initial concept to production deployment. I discuss the technical decisions made along the way, challenges encountered, and solutions implemented. This article provides insights into architecture planning, technology selection, and development workflow.
-                </p>
-                <div className="mt-auto">
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Full-Stack</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">E-Commerce</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Case Study</span>
-                  </div>
-                  <a
-                    href="#"
-                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
-                  >
-                    <span>Read Full Article</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </div>
 
           <div className="text-center mt-12">
