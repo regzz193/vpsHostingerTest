@@ -39,7 +39,7 @@ class SkillAnalyticsController extends Controller
         // Get top 5 skills (assuming they're ordered by importance)
         $topSkills = Skill::orderBy('order')
             ->take(5)
-            ->get(['name', 'category']);
+            ->get(['name', 'category', 'proficiency']);
 
         // Determine if skill set indicates senior level
         $seniorLevelAnalysis = $this->analyzeSeniorLevel();
@@ -59,20 +59,30 @@ class SkillAnalyticsController extends Controller
      */
     private function analyzeSeniorLevel()
     {
+        // Get skills with proficiency by category
+        $frontendSkills = Skill::where('category', 'frontend')->get();
+        $backendSkills = Skill::where('category', 'backend')->get();
+        $devopsSkills = Skill::where('category', 'devops')->get();
+
         // Count skills by category
-        $frontendCount = Skill::where('category', 'frontend')->count();
-        $backendCount = Skill::where('category', 'backend')->count();
-        $devopsCount = Skill::where('category', 'devops')->count();
+        $frontendCount = $frontendSkills->count();
+        $backendCount = $backendSkills->count();
+        $devopsCount = $devopsSkills->count();
+
+        // Calculate average proficiency for each category
+        $frontendProficiency = $frontendSkills->isEmpty() ? 0 : $frontendSkills->avg('proficiency');
+        $backendProficiency = $backendSkills->isEmpty() ? 0 : $backendSkills->avg('proficiency');
+        $devopsProficiency = $devopsSkills->isEmpty() ? 0 : $devopsSkills->avg('proficiency');
 
         // Define thresholds for senior level
         $frontendThreshold = 5;
         $backendThreshold = 5;
         $devopsThreshold = 3;
 
-        // Calculate scores
-        $frontendScore = min(100, ($frontendCount / $frontendThreshold) * 100);
-        $backendScore = min(100, ($backendCount / $backendThreshold) * 100);
-        $devopsScore = min(100, ($devopsCount / $devopsThreshold) * 100);
+        // Calculate scores considering both count and proficiency
+        $frontendScore = min(100, ($frontendCount / $frontendThreshold) * ($frontendProficiency / 100) * 100);
+        $backendScore = min(100, ($backendCount / $backendThreshold) * ($backendProficiency / 100) * 100);
+        $devopsScore = min(100, ($devopsCount / $devopsThreshold) * ($devopsProficiency / 100) * 100);
 
         // Calculate overall score (weighted average)
         $overallScore = ($frontendScore * 0.35) + ($backendScore * 0.35) + ($devopsScore * 0.3);

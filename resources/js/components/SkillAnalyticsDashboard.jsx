@@ -402,9 +402,22 @@ const SkillAnalyticsDashboard = () => {
                   >
                     {index + 1}
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h4 className="text-md font-semibold text-gray-800 dark:text-white">{skill.name}</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{skill.category}</p>
+                    <div className="flex items-center mt-1">
+                      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
+                        <div
+                          className={`h-2 rounded-full ${
+                            skill.proficiency >= 80 ? 'bg-green-500' :
+                            skill.proficiency >= 50 ? 'bg-yellow-500' :
+                            'bg-blue-500'
+                          }`}
+                          style={{ width: `${skill.proficiency || 100}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{skill.proficiency || 100}%</span>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize mt-1">{skill.category}</p>
                   </div>
                 </li>
               ))}

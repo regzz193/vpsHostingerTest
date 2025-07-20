@@ -10,7 +10,8 @@ const SkillsManager = () => {
 
   const [newSkill, setNewSkill] = useState({
     name: '',
-    category: 'frontend'
+    category: 'frontend',
+    proficiency: 100
   });
 
   const [editingSkill, setEditingSkill] = useState(null);
@@ -86,7 +87,8 @@ const SkillsManager = () => {
       // Reset form
       setNewSkill({
         name: '',
-        category: 'frontend'
+        category: 'frontend',
+        proficiency: 100
       });
 
       setStatus({ ...status, saving: false, success: true });
@@ -269,6 +271,16 @@ const SkillsManager = () => {
                       <option value="backend">Backend</option>
                       <option value="devops">DevOps</option>
                     </select>
+                    <input
+                      type="number"
+                      name="proficiency"
+                      value={editingSkill.proficiency || 100}
+                      onChange={handleEditingSkillChange}
+                      min="1"
+                      max="100"
+                      className="w-20 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-800 dark:text-white"
+                      placeholder="Proficiency %"
+                    />
                     <button
                       type="button"
                       onClick={updateSkill}
@@ -286,7 +298,18 @@ const SkillsManager = () => {
                   </div>
                 ) : (
                   <>
-                    <span className="text-gray-700 dark:text-gray-200">{skill.name}</span>
+                    <div className="flex flex-col">
+                      <span className="text-gray-700 dark:text-gray-200">{skill.name}</span>
+                      <div className="flex items-center mt-1">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
+                          <div
+                            className="bg-purple-600 h-2.5 rounded-full"
+                            style={{ width: `${skill.proficiency || 100}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{skill.proficiency || 100}%</span>
+                      </div>
+                    </div>
                     <div className="flex items-center space-x-2">
                       <button
                         type="button"
@@ -379,6 +402,21 @@ const SkillsManager = () => {
               <option value="backend">Backend</option>
               <option value="devops">DevOps</option>
             </select>
+            <div className="flex flex-col">
+              <label htmlFor="proficiency" className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                Proficiency (%)
+              </label>
+              <input
+                type="number"
+                name="proficiency"
+                value={newSkill.proficiency}
+                onChange={handleNewSkillChange}
+                min="1"
+                max="100"
+                className="w-24 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                required
+              />
+            </div>
             <button
               type="submit"
               disabled={status.saving}
