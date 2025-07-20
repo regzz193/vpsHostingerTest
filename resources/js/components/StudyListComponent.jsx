@@ -7,6 +7,7 @@ const StudyListComponent = () => {
   const [error, setError] = useState(null);
   const [editingNotes, setEditingNotes] = useState(null);
   const [notes, setNotes] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
   const [status, setStatus] = useState({
     saving: false,
     success: false,
@@ -171,11 +172,60 @@ const StudyListComponent = () => {
     );
   }
 
+  // Filter study list based on active category
+  const filteredStudyList = activeCategory === 'all'
+    ? studyList
+    : studyList.filter(skill => skill.category === activeCategory);
+
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-purple-600/10 to-indigo-600/10 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl p-6 shadow-sm border border-purple-100 dark:border-purple-900/20">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-1">Skills to Study</h2>
         <p className="text-gray-600 dark:text-gray-400 text-sm">Track your learning progress and update proficiency as you improve</p>
+      </div>
+
+      {/* Category filter tabs */}
+      <div className="flex flex-wrap gap-2">
+        <button
+          onClick={() => setActiveCategory('all')}
+          className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+            activeCategory === 'all'
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+          }`}
+        >
+          All Skills
+        </button>
+        <button
+          onClick={() => setActiveCategory('frontend')}
+          className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+            activeCategory === 'frontend'
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+          }`}
+        >
+          Frontend
+        </button>
+        <button
+          onClick={() => setActiveCategory('backend')}
+          className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+            activeCategory === 'backend'
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+          }`}
+        >
+          Backend
+        </button>
+        <button
+          onClick={() => setActiveCategory('devops')}
+          className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+            activeCategory === 'devops'
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+          }`}
+        >
+          DevOps
+        </button>
       </div>
 
       {status.success && (

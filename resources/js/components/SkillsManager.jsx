@@ -289,10 +289,27 @@ const SkillsManager = () => {
                         id={`to_study_${editingSkill.id}`}
                         name="to_study"
                         checked={editingSkill.to_study || false}
-                        onChange={(e) => setEditingSkill(prev => ({
-                          ...prev,
-                          to_study: e.target.checked
-                        }))}
+                        onChange={(e) => {
+                          // Update the editingSkill state
+                          setEditingSkill(prev => ({
+                            ...prev,
+                            to_study: e.target.checked
+                          }));
+
+                          // Also call the toggleStudyStatus endpoint directly
+                          axios.put(`/api/skills/${editingSkill.id}/toggle-study`)
+                            .then(response => {
+                              console.log('Study status toggled:', response.data);
+                            })
+                            .catch(error => {
+                              console.error('Error toggling study status:', error);
+                              // Revert the checkbox state if there's an error
+                              setEditingSkill(prev => ({
+                                ...prev,
+                                to_study: !e.target.checked
+                              }));
+                            });
+                        }}
                         className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                       />
                       <label htmlFor={`to_study_${editingSkill.id}`} className="ml-2 text-sm text-gray-700 dark:text-gray-300">
