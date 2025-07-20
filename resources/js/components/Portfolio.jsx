@@ -142,6 +142,92 @@ const ContactForm = () => {
   );
 };
 
+// Developer Badge Component
+const DeveloperBadge = () => {
+  // Calculate years of experience since 2023
+  const calculateExperience = () => {
+    const startYear = 2023;
+    const currentYear = new Date().getFullYear();
+    return Math.max(0, currentYear - startYear);
+  };
+
+  // Determine developer level based on years of experience
+  const getDeveloperLevel = (years) => {
+    if (years < 0) { // This condition will never be true with the current calculation
+      return {
+        level: 'Junior Developer',
+        gradient: 'from-green-400 to-green-600',
+        textColor: 'text-white',
+        bgColor: 'bg-gradient-to-r from-green-400 to-green-600',
+        darkBgColor: 'dark:from-green-500 dark:to-green-700',
+        borderColor: 'border-green-300',
+        darkBorderColor: 'dark:border-green-600',
+        shadowColor: 'shadow-green-500/20',
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.59L7.3 9.24a.75.75 0 00-1.1 1.02l3.25 3.5a.75.75 0 001.1 0l3.25-3.5a.75.75 0 10-1.1-1.02l-1.95 2.1V6.75z" clipRule="evenodd" />
+          </svg>
+        )
+      };
+    } else if (years < 5) {
+      return {
+        level: 'Mid Level Developer',
+        gradient: 'from-blue-400 to-blue-600',
+        textColor: 'text-white',
+        bgColor: 'bg-gradient-to-r from-blue-400 to-blue-600',
+        darkBgColor: 'dark:from-blue-500 dark:to-blue-700',
+        borderColor: 'border-blue-300',
+        darkBorderColor: 'dark:border-blue-600',
+        shadowColor: 'shadow-blue-500/20',
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+          </svg>
+        )
+      };
+    } else {
+      return {
+        level: 'Senior Developer',
+        gradient: 'from-purple-400 to-purple-600',
+        textColor: 'text-white',
+        bgColor: 'bg-gradient-to-r from-purple-400 to-purple-600',
+        darkBgColor: 'dark:from-purple-500 dark:to-purple-700',
+        borderColor: 'border-purple-300',
+        darkBorderColor: 'dark:border-purple-600',
+        shadowColor: 'shadow-purple-500/20',
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+          </svg>
+        )
+      };
+    }
+  };
+
+  const years = calculateExperience();
+  const { level, gradient, textColor, bgColor, darkBgColor, borderColor, darkBorderColor, shadowColor, icon } = getDeveloperLevel(years);
+
+  return (
+    <div className="absolute top-4 right-4 z-10">
+      {/* Modern badge design with enhanced visibility */}
+      <div className={`${bgColor} ${darkBgColor} ${textColor} rounded-md shadow-xl px-3.5 py-2 border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-2xl transform hover:scale-105 hover:translate-y-[-2px] ring-2 ring-white/10`}>
+        <div className="flex items-center space-x-2">
+          <div className="bg-white/30 rounded-full p-1.5 shadow-inner">
+            {icon}
+          </div>
+          <span className="font-bold text-sm tracking-wide">{level}</span>
+        </div>
+
+        {/* Enhanced shine effect */}
+        <div className="absolute inset-0 overflow-hidden rounded-md pointer-events-none">
+          <div className="absolute -top-6 left-0 right-0 h-10 bg-white/20 blur-sm transform rotate-15"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Portfolio = () => {
   const [settings, setSettings] = useState({
     email: 'reggie.ambrocio@example.com',
@@ -402,43 +488,110 @@ const Portfolio = () => {
       </header>
 
       {/* About Section */}
-      <section id="about" className="py-16 md:py-24 bg-white dark:bg-gray-800">
+      <section id="about" className="py-16 md:py-24 bg-white dark:bg-gray-800 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-purple-200/20 to-blue-200/20 dark:from-purple-900/10 dark:to-blue-900/10 rounded-full blur-3xl -z-10 transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tr from-blue-200/20 to-purple-200/20 dark:from-blue-900/10 dark:to-purple-900/10 rounded-full blur-3xl -z-10 transform translate-x-1/2 translate-y-1/2"></div>
+
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
-            About Me
-          </h2>
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white inline-block relative">
+              <span className="relative z-10">About Me</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-purple-100 dark:bg-purple-900/30 -z-10 transform -rotate-1"></span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Get to know me better - my skills and what drives me as a developer.
+            </p>
+          </div>
+
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="md:w-1/2">
-              <img
-                src="/images/_CDR9065.png"
-                alt="Reggie Ambrocio"
-                className="rounded-lg shadow-lg w-full max-w-md mx-auto"
-              />
-              <div className="mt-6 text-center">
-                <a
-                  href="/cv/Blue Simple Professional CV Resume.pdf"
-                  download
-                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-300"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Download CV
-                </a>
+              <div className="relative w-full max-w-md mx-auto group perspective">
+                <div className="relative rounded-xl overflow-hidden transform transition-transform duration-700 group-hover:rotate-y-12 shadow-2xl">
+                  <DeveloperBadge />
+                  <img
+                    src="/images/_CDR9065.png"
+                    alt="Reggie Ambrocio"
+                    className="w-full transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+
+                <div className="mt-8 flex justify-center space-x-4">
+                  <a
+                    href="/cv/Blue Simple Professional CV Resume.pdf"
+                    download
+                    className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition duration-300 shadow-md hover:shadow-xl transform hover:-translate-y-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download CV
+                  </a>
+
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center px-5 py-3 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-50 dark:hover:bg-gray-600 transition duration-300 shadow-md hover:shadow-xl transform hover:-translate-y-1"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    Contact Me
+                  </a>
+                </div>
               </div>
             </div>
-            <div className="md:w-1/2">
-              <p className="text-lg mb-6 text-gray-600 dark:text-gray-300">
-                {settings.about_me_1}
-              </p>
-              <p className="text-lg mb-6 text-gray-600 dark:text-gray-300">
-                {settings.about_me_2}
-              </p>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                {settings.about_me_3}
-              </p>
+
+            <div className="md:w-1/2 space-y-8">
+              {/* Bio card with quote styling */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 relative transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+                <div className="absolute top-4 left-4 text-6xl text-purple-200 dark:text-purple-900 opacity-50">"</div>
+                <div className="relative z-10">
+                  <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {settings.about_me_1}
+                  </p>
+                </div>
+                <div className="absolute bottom-4 right-4 text-6xl text-purple-200 dark:text-purple-900 opacity-50">"</div>
+              </div>
+
+              {/* Skills and expertise */}
+              <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
+                <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  Expertise & Approach
+                </h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                  {settings.about_me_2}
+                </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {['Problem Solver', 'Clean Code', 'User-Focused', 'Continuous Learner', 'Team Player', 'Detail-Oriented'].map((trait, index) => (
+                    <div key={index} className="bg-white dark:bg-gray-700 px-3 py-2 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600 text-center text-gray-700 dark:text-gray-300 text-sm font-medium transform transition-transform duration-300 hover:scale-105 hover:shadow-md">
+                      {trait}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Personal interests */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-b from-purple-100 to-transparent dark:from-purple-900/20 dark:to-transparent -z-10 rounded-bl-[100px]"></div>
+
+                <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-white flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Beyond Coding
+                </h3>
+                <p className="text-lg text-gray-600 dark:text-gray-300">
+                  {settings.about_me_3}
+                </p>
+              </div>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -530,87 +683,180 @@ const Portfolio = () => {
       {/* Projects Section */}
       <section id="projects" className="py-16 md:py-24 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
-            Featured Projects
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white inline-block relative">
+              <span className="relative z-10">Featured Projects</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-purple-100 dark:bg-purple-900/30 -z-10 transform -rotate-1"></span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Explore some of my recent work. Each project represents unique challenges and solutions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {/* Project 1 */}
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:scale-105">
-              <img
-                src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                alt="E-Commerce Platform"
-                className="w-full h-48 object-cover"
-              />
+            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn">
+              <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                <span className="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Featured
+                </span>
+              </div>
+              <div className="relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
+                  alt="E-Commerce Platform"
+                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                  <div className="p-4 w-full">
+                    <div className="flex space-x-3 justify-center">
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">E-Commerce Platform</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  A full-featured online store with product management, cart functionality, and secure checkout.
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">E-Commerce Platform</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                  A full-featured online store with product management, cart functionality, and secure checkout. Includes user authentication, payment processing, and order tracking.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Laravel</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">React</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">MySQL</span>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">React</span>
+                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">MySQL</span>
                 </div>
                 <a
                   href="#"
-                  className="text-purple-600 dark:text-purple-400 font-medium hover:underline"
+                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                 >
-                  View Project →
+                  <span>View Project</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
                 </a>
               </div>
             </div>
 
             {/* Project 2 */}
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:scale-105">
-              <img
-                src="https://images.unsplash.com/photo-1540350394557-8d14678e7f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                alt="Task Management App"
-                className="w-full h-48 object-cover"
-              />
+            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-200">
+              <div className="relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1540350394557-8d14678e7f91?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
+                  alt="Task Management App"
+                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                  <div className="p-4 w-full">
+                    <div className="flex space-x-3 justify-center">
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">Task Management App</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  A collaborative task management tool with real-time updates and team collaboration features.
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Task Management App</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                  A collaborative task management tool with real-time updates and team collaboration features. Includes task assignment, progress tracking, and deadline notifications.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Next.js</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">Tailwind</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Firebase</span>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Next.js</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">Tailwind</span>
+                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Firebase</span>
                 </div>
                 <a
                   href="#"
-                  className="text-purple-600 dark:text-purple-400 font-medium hover:underline"
+                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                 >
-                  View Project →
+                  <span>View Project</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
                 </a>
               </div>
             </div>
 
             {/* Project 3 */}
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:transform hover:scale-105">
-              <img
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
-                alt="Analytics Dashboard"
-                className="w-full h-48 object-cover"
-              />
+            <div className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-300">
+              <div className="relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80"
+                  alt="Analytics Dashboard"
+                  className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                  <div className="p-4 w-full">
+                    <div className="flex space-x-3 justify-center">
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Demo">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                          <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                      <a href="#" className="bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full transition-colors duration-300" title="View Code">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-800 dark:text-white">Analytics Dashboard</h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  A comprehensive analytics dashboard with data visualization and reporting capabilities.
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Analytics Dashboard</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                  A comprehensive analytics dashboard with data visualization and reporting capabilities. Features interactive charts, customizable reports, and real-time data monitoring.
                 </p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Vue.js</span>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">Express</span>
-                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">MongoDB</span>
+                  <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Vue.js</span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">Express</span>
+                  <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">MongoDB</span>
                 </div>
                 <a
                   href="#"
-                  className="text-purple-600 dark:text-purple-400 font-medium hover:underline"
+                  className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                 >
-                  View Project →
+                  <span>View Project</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
                 </a>
               </div>
             </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <a
+              href="#"
+              className="inline-flex items-center px-6 py-3 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition duration-300 font-medium"
+            >
+              View All Projects
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </a>
           </div>
         </div>
       </section>
@@ -618,167 +864,271 @@ const Portfolio = () => {
       {/* Blog Section */}
       <section id="blog" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
-            Blog & Articles
-          </h2>
-          <div className="max-w-4xl mx-auto">
-            <p className="text-lg text-center text-gray-600 dark:text-gray-300 mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white inline-block relative">
+              <span className="relative z-10">Blog & Articles</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-blue-100 dark:bg-blue-900/30 -z-10 transform rotate-1"></span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
               I share my insights and experiences in web development, best practices, and emerging technologies.
             </p>
+          </div>
 
-            <div className="space-y-10">
-              {/* Blog Post 1 */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {/* Blog Post 1 */}
+            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn flex flex-col h-full">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
+                  alt="React Custom Hooks"
+                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute top-0 right-0 bg-gradient-to-l from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-2 rounded-bl-lg z-10 shadow-md transform transition-transform duration-300 group-hover:scale-105 border-b border-l border-white/20">
+                  <span className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                    </svg>
+                    Popular
+                  </span>
+                </div>
+                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
+                  <div className="flex items-center text-xs text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>June 15, 2023</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
-                    Building Scalable React Applications with Custom Hooks
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    Custom hooks are one of React's most powerful features, allowing developers to extract and reuse stateful logic across components. In this article, I explore how to create and implement custom hooks to improve code reusability, readability, and maintainability in large-scale React applications.
-                  </p>
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                  Building Scalable React Applications with Custom Hooks
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
+                  Custom hooks are one of React's most powerful features, allowing developers to extract and reuse stateful logic across components. In this article, I explore how to create and implement custom hooks to improve code reusability, readability, and maintainability in large-scale React applications.
+                </p>
+                <div className="mt-auto">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">React</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">JavaScript</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Web Development</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">React</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">JavaScript</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Web Development</span>
                   </div>
                   <a
                     href="#"
-                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                   >
-                    Read Full Article
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <span>Read Full Article</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </a>
                 </div>
               </div>
+            </div>
 
-              {/* Blog Post 2 */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Blog Post 2 */}
+            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-200 flex flex-col h-full">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
+                  alt="Laravel API Performance"
+                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
+                  <div className="flex items-center text-xs text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>May 22, 2023</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
-                    Optimizing Laravel API Performance for High-Traffic Applications
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    As applications scale, API performance becomes increasingly critical. In this deep dive, I share techniques I've implemented to optimize Laravel API endpoints, including efficient database queries, caching strategies, and asynchronous processing. Learn how these optimizations reduced response times by 60% in a recent project.
-                  </p>
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                  Optimizing Laravel API Performance for High-Traffic Applications
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
+                  As applications scale, API performance becomes increasingly critical. In this deep dive, I share techniques I've implemented to optimize Laravel API endpoints, including efficient database queries, caching strategies, and asynchronous processing. Learn how these optimizations reduced response times by 60% in a recent project.
+                </p>
+                <div className="mt-auto">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Laravel</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">API</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Performance</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">API</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Performance</span>
                   </div>
                   <a
                     href="#"
-                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                   >
-                    Read Full Article
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <span>Read Full Article</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </a>
                 </div>
               </div>
+            </div>
 
-              {/* Blog Post 3 */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-                <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Blog Post 3 */}
+            <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 animate-fadeIn animation-delay-300 flex flex-col h-full">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1523800503107-5bc3ba2a6f81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=300&q=80"
+                  alt="E-Commerce Platform Case Study"
+                  className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute bottom-0 left-0 bg-gradient-to-r from-black/70 to-transparent w-full p-4">
+                  <div className="flex items-center text-xs text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>April 10, 2023</span>
                   </div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-800 dark:text-white">
-                    From Concept to Deployment: Building a Full-Stack E-Commerce Platform
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4">
-                    In this case study, I walk through the entire process of creating a modern e-commerce platform from initial concept to production deployment. I discuss the technical decisions made along the way, challenges encountered, and solutions implemented. This article provides insights into architecture planning, technology selection, and development workflow.
-                  </p>
+                </div>
+              </div>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">
+                  From Concept to Deployment: Building a Full-Stack E-Commerce Platform
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4 flex-1 line-clamp-3">
+                  In this case study, I walk through the entire process of creating a modern e-commerce platform from initial concept to production deployment. I discuss the technical decisions made along the way, challenges encountered, and solutions implemented. This article provides insights into architecture planning, technology selection, and development workflow.
+                </p>
+                <div className="mt-auto">
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-200 text-sm rounded-full">Full-Stack</span>
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-200 text-sm rounded-full">E-Commerce</span>
-                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-200 text-sm rounded-full">Case Study</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Full-Stack</span>
+                    <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">E-Commerce</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Case Study</span>
                   </div>
                   <a
                     href="#"
-                    className="text-purple-600 dark:text-purple-400 font-medium hover:underline inline-flex items-center"
+                    className="inline-flex items-center text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300"
                   >
-                    Read Full Article
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    <span>Read Full Article</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </a>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="mt-10 text-center">
-              <a
-                href="#"
-                className="inline-flex items-center px-6 py-3 border border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition duration-300"
-              >
-                View All Articles
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </a>
-            </div>
+          <div className="text-center mt-12">
+            <a
+              href="#"
+              className="inline-flex items-center px-6 py-3 border-2 border-purple-600 text-purple-600 dark:text-purple-400 dark:border-purple-400 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/20 transition duration-300 font-medium"
+            >
+              View All Articles
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </a>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 md:py-24 bg-white dark:bg-gray-800">
+      <section id="contact" className="py-16 md:py-24 bg-white dark:bg-gray-800 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-200/30 to-blue-200/30 dark:from-purple-900/10 dark:to-blue-900/10 rounded-full blur-3xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-green-200/30 to-teal-200/30 dark:from-green-900/10 dark:to-teal-900/10 rounded-full blur-3xl -z-10 transform -translate-x-1/2 translate-y-1/2"></div>
+
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800 dark:text-white">
-            Get In Touch
-          </h2>
-          <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 p-8">
-            <ContactForm />
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white inline-block relative">
+              <span className="relative z-10">Get In Touch</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-green-100 dark:bg-green-900/30 -z-10 transform rotate-1"></span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              Have a question or want to work together? Feel free to reach out!
+            </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
+            {/* Contact Form */}
+            <div className="lg:col-span-3 animate-fadeIn">
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 relative overflow-hidden">
+                {/* Decorative corner accent */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-b from-purple-100 to-transparent dark:from-purple-900/20 dark:to-transparent -z-10 rounded-bl-[100px]"></div>
+
+                <h3 className="text-xl font-bold mb-6 text-gray-800 dark:text-white">Send a Message</h3>
+                <ContactForm />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Email</h3>
-              <p className="text-gray-600 dark:text-gray-300">{settings.email}</p>
             </div>
 
-            <div>
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Phone</h3>
-              <p className="text-gray-600 dark:text-gray-300">{settings.phone}</p>
-            </div>
+            {/* Contact Information */}
+            <div className="lg:col-span-2 flex flex-col justify-center">
+              <div className="space-y-6">
+                {/* Email Card */}
+                <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate-fadeIn animation-delay-200">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md group-hover:shadow-purple-500/30 transition-all duration-300 group-hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors duration-300">Email</h3>
+                      <p className="text-gray-600 dark:text-gray-300">{settings.email}</p>
+                      <a href={`mailto:${settings.email}`} className="inline-flex items-center mt-2 text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors duration-300">
+                        <span>Send an email</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
 
-            <div>
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+                {/* Phone Card */}
+                <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate-fadeIn animation-delay-300">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md group-hover:shadow-blue-500/30 transition-all duration-300 group-hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">Phone</h3>
+                      <p className="text-gray-600 dark:text-gray-300">{settings.phone}</p>
+                      <a href={`tel:${settings.phone.replace(/\s+/g, '')}`} className="inline-flex items-center mt-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300">
+                        <span>Call me</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Card */}
+                <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate-fadeIn animation-delay-400">
+                  <div className="flex items-start">
+                    <div className="flex-shrink-0">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md group-hover:shadow-green-500/30 transition-all duration-300 group-hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-semibold mb-1 text-gray-800 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">Location</h3>
+                      <p className="text-gray-600 dark:text-gray-300">{settings.location}</p>
+                      <a href={`https://maps.google.com/?q=${encodeURIComponent(settings.location)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center mt-2 text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors duration-300">
+                        <span>View on map</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Location</h3>
-              <p className="text-gray-600 dark:text-gray-300">{settings.location}</p>
             </div>
           </div>
         </div>
