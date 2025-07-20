@@ -110,14 +110,22 @@ const StudyListComponent = () => {
     setStatus({ ...status, saving: true, success: false, error: null });
 
     try {
-      const response = await axios.put(`/api/skills/${id}/proficiency`, {
+      // Find the skill in the study list
+      const skill = studyList.find(s => s.id === id);
+      if (!skill) {
+        throw new Error('Skill not found');
+      }
+
+      // Use the general update endpoint instead of the dedicated proficiency endpoint
+      const response = await axios.put(`/api/skills/${id}`, {
+        ...skill,
         proficiency: newProficiency
       });
 
       // Update local state
       setStudyList(prevList =>
-        prevList.map(skill =>
-          skill.id === id ? { ...skill, proficiency: newProficiency } : skill
+        prevList.map(s =>
+          s.id === id ? { ...s, proficiency: newProficiency } : s
         )
       );
 
