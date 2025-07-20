@@ -14,6 +14,9 @@ Route::view('/me-administrator', 'admin');
 Route::post('/api/messages', [MessageController::class, 'store']);
 Route::get('/api/messages', [MessageController::class, 'index']);
 Route::put('/api/messages/{id}/read', [MessageController::class, 'markAsRead']);
+Route::put('/api/messages/{id}/toggle-read', [MessageController::class, 'toggleReadStatus']);
+Route::put('/api/messages/mark-all-read', [MessageController::class, 'markAllAsRead']);
+Route::delete('/api/messages/{id}', [MessageController::class, 'destroy']);
 
 // Profile Settings routes
 Route::get('/api/profile-settings', [ProfileSettingController::class, 'index']);
