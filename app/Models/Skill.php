@@ -19,6 +19,8 @@ class Skill extends Model
         'category',
         'order',
         'proficiency',
+        'to_study',
+        'study_notes',
     ];
 
     /**

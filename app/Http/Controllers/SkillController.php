@@ -46,6 +46,9 @@ class SkillController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string|in:frontend,backend,devops',
             'order' => 'nullable|integer',
+            'proficiency' => 'nullable|integer|min:1|max:100',
+            'to_study' => 'nullable|boolean',
+            'study_notes' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -90,6 +93,9 @@ class SkillController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'category' => 'sometimes|required|string|in:frontend,backend,devops',
             'order' => 'sometimes|required|integer',
+            'proficiency' => 'sometimes|required|integer|min:1|max:100',
+            'to_study' => 'sometimes|boolean',
+            'study_notes' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -139,5 +145,65 @@ class SkillController extends Controller
         }
 
         return response()->json(['message' => 'Skills reordered successfully']);
+    }
+
+    /**
+     * Get skills marked for study.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getStudyList()
+    {
+        $studyList = Skill::where('to_study', true)
+            ->orderBy('category')
+            ->orderBy('order')
+            ->get();
+
+        return response()->json(['data' => $studyList]);
+    }
+
+    /**
+     * Toggle the to_study status of a skill.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleStudyStatus($id)
+    {
+        $skill = Skill::findOrFail($id);
+        $skill->to_study = !$skill->to_study;
+        $skill->save();
+
+        return response()->json([
+            'message' => $skill->to_study ? 'Skill added to study list' : 'Skill removed from study list',
+            'data' => $skill
+        ]);
+    }
+
+    /**
+     * Update study notes for a skill.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStudyNotes(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'study_notes' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $skill = Skill::findOrFail($id);
+        $skill->study_notes = $request->study_notes;
+        $skill->save();
+
+        return response()->json([
+            'message' => 'Study notes updated successfully',
+            'data' => $skill
+        ]);
     }
 }

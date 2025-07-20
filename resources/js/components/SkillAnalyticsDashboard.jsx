@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Pie, Bar, Radar } from 'react-chartjs-2';
+import StudyListComponent from './StudyListComponent';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,6 +36,7 @@ const SkillAnalyticsDashboard = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('analytics'); // 'analytics' or 'study-list'
 
   useEffect(() => {
     fetchAnalyticsData();
@@ -169,116 +171,202 @@ const SkillAnalyticsDashboard = () => {
             <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-1">Skill Analytics Dashboard</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">Analyze your developer skill level</p>
           </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+                activeTab === 'analytics'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+              }`}
+            >
+              Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('study-list')}
+              className={`px-4 py-2 rounded-md transition-all duration-300 text-sm font-medium ${
+                activeTab === 'study-list'
+                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+              }`}
+            >
+              Study List
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Senior Level Analysis */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn">
-        <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M6 6a3 3 0 013-3h2a3 3 0 013 3v2a3 3 0 01-3 3H9a3 3 0 01-3-3V6z" clipRule="evenodd" />
-            <path d="M13 10a3 3 0 013 3v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1a3 3 0 013-3h6z" />
-          </svg>
-          Developer Level Assessment
-        </h3>
-        <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Based on your skill distribution</p>
+      {activeTab === 'analytics' ? (
+        <>
+          {/* Senior Level Analysis */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn">
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-purple-600 dark:text-purple-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M6 6a3 3 0 013-3h2a3 3 0 013 3v2a3 3 0 01-3 3H9a3 3 0 01-3-3V6z" clipRule="evenodd" />
+                <path d="M13 10a3 3 0 013 3v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1a3 3 0 013-3h6z" />
+              </svg>
+              Developer Level Assessment
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Based on your skill distribution</p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 h-full">
-              <div className="flex items-center justify-center mb-4">
-                <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-2xl font-bold ${
-                  analyticsData.senior_level_analysis.level === 'Senior'
-                    ? 'bg-green-500'
-                    : analyticsData.senior_level_analysis.level === 'Mid-level'
-                    ? 'bg-yellow-500'
-                    : 'bg-blue-500'
-                }`}>
-                  {analyticsData.senior_level_analysis.scores.overall}%
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 h-full">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className={`w-24 h-24 rounded-full flex items-center justify-center text-white text-2xl font-bold ${
+                      analyticsData.senior_level_analysis.level === 'Senior'
+                        ? 'bg-green-500'
+                        : analyticsData.senior_level_analysis.level === 'Mid-level'
+                        ? 'bg-yellow-500'
+                        : 'bg-blue-500'
+                    }`}>
+                      {analyticsData.senior_level_analysis.scores.overall}%
+                    </div>
+                  </div>
+                  <h4 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-2">
+                    {analyticsData.senior_level_analysis.level} Developer
+                  </h4>
+                  <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
+                    {analyticsData.senior_level_analysis.analysis}
+                  </p>
+                  <div className="grid grid-cols-3 gap-4 mt-6">
+                    <div className="text-center">
+                      <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
+                        analyticsData.senior_level_analysis.scores.frontend >= 80
+                          ? 'bg-green-500'
+                          : analyticsData.senior_level_analysis.scores.frontend >= 50
+                          ? 'bg-yellow-500'
+                          : 'bg-blue-500'
+                      }`}>
+                        {analyticsData.senior_level_analysis.scores.frontend}%
+                      </div>
+                      <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">Frontend</p>
+                    </div>
+                    <div className="text-center">
+                      <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
+                        analyticsData.senior_level_analysis.scores.backend >= 80
+                          ? 'bg-green-500'
+                          : analyticsData.senior_level_analysis.scores.backend >= 50
+                          ? 'bg-yellow-500'
+                          : 'bg-blue-500'
+                      }`}>
+                        {analyticsData.senior_level_analysis.scores.backend}%
+                      </div>
+                      <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">Backend</p>
+                    </div>
+                    <div className="text-center">
+                      <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
+                        analyticsData.senior_level_analysis.scores.devops >= 80
+                          ? 'bg-green-500'
+                          : analyticsData.senior_level_analysis.scores.devops >= 50
+                          ? 'bg-yellow-500'
+                          : 'bg-blue-500'
+                      }`}>
+                        {analyticsData.senior_level_analysis.scores.devops}%
+                      </div>
+                      <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">DevOps</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <h4 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-2">
-                {analyticsData.senior_level_analysis.level} Developer
-              </h4>
-              <p className="text-gray-600 dark:text-gray-400 text-center mb-4">
-                {analyticsData.senior_level_analysis.analysis}
-              </p>
-              <div className="grid grid-cols-3 gap-4 mt-6">
-                <div className="text-center">
-                  <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
-                    analyticsData.senior_level_analysis.scores.frontend >= 80
-                      ? 'bg-green-500'
-                      : analyticsData.senior_level_analysis.scores.frontend >= 50
-                      ? 'bg-yellow-500'
-                      : 'bg-blue-500'
-                  }`}>
-                    {analyticsData.senior_level_analysis.scores.frontend}%
+              <div>
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 h-full">
+                  <h4 className="text-md font-semibold text-gray-800 dark:text-white mb-4">Skill Proficiency Radar</h4>
+                  <div className="h-64">
+                    {seniorLevelChartData ? (
+                      <Radar
+                        data={seniorLevelChartData}
+                        options={{
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          scales: {
+                            r: {
+                              angleLines: {
+                                display: true,
+                                color: 'rgba(156, 163, 175, 0.2)'
+                              },
+                              grid: {
+                                color: 'rgba(156, 163, 175, 0.2)'
+                              },
+                              pointLabels: {
+                                font: {
+                                  size: 12,
+                                  weight: 'bold'
+                                }
+                              },
+                              suggestedMin: 0,
+                              suggestedMax: 100,
+                              ticks: {
+                                stepSize: 20,
+                                backdropColor: 'transparent'
+                              }
+                            }
+                          },
+                          plugins: {
+                            legend: {
+                              display: false
+                            },
+                            tooltip: {
+                              backgroundColor: 'rgba(17, 24, 39, 0.8)',
+                              titleFont: {
+                                size: 13,
+                                weight: 'bold'
+                              },
+                              bodyFont: {
+                                size: 12
+                              },
+                              padding: 10,
+                              cornerRadius: 6,
+                              callbacks: {
+                                label: function(context) {
+                                  return `Proficiency: ${context.parsed.r}%`;
+                                }
+                              }
+                            }
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-gray-500 dark:text-gray-400">No data available</p>
+                      </div>
+                    )}
                   </div>
-                  <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">Frontend</p>
-                </div>
-                <div className="text-center">
-                  <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
-                    analyticsData.senior_level_analysis.scores.backend >= 80
-                      ? 'bg-green-500'
-                      : analyticsData.senior_level_analysis.scores.backend >= 50
-                      ? 'bg-yellow-500'
-                      : 'bg-blue-500'
-                  }`}>
-                    {analyticsData.senior_level_analysis.scores.backend}%
-                  </div>
-                  <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">Backend</p>
-                </div>
-                <div className="text-center">
-                  <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold ${
-                    analyticsData.senior_level_analysis.scores.devops >= 80
-                      ? 'bg-green-500'
-                      : analyticsData.senior_level_analysis.scores.devops >= 50
-                      ? 'bg-yellow-500'
-                      : 'bg-blue-500'
-                  }`}>
-                    {analyticsData.senior_level_analysis.scores.devops}%
-                  </div>
-                  <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">DevOps</p>
                 </div>
               </div>
             </div>
           </div>
-          <div>
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 h-full">
-              <h4 className="text-md font-semibold text-gray-800 dark:text-white mb-4">Skill Proficiency Radar</h4>
-              <div className="h-64">
-                {seniorLevelChartData ? (
-                  <Radar
-                    data={seniorLevelChartData}
+
+          {/* Stats and Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Skills Distribution */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-300">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                  <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                </svg>
+                Skills Distribution
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Breakdown of your skills by category</p>
+              <div className="h-64 flex items-center justify-center">
+                {skillsDistributionChartData ? (
+                  <Pie
+                    data={skillsDistributionChartData}
                     options={{
                       responsive: true,
                       maintainAspectRatio: false,
-                      scales: {
-                        r: {
-                          angleLines: {
-                            display: true,
-                            color: 'rgba(156, 163, 175, 0.2)'
-                          },
-                          grid: {
-                            color: 'rgba(156, 163, 175, 0.2)'
-                          },
-                          pointLabels: {
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            usePointStyle: true,
+                            padding: 15,
                             font: {
                               size: 12,
                               weight: 'bold'
                             }
-                          },
-                          suggestedMin: 0,
-                          suggestedMax: 100,
-                          ticks: {
-                            stepSize: 20,
-                            backdropColor: 'transparent'
                           }
-                        }
-                      },
-                      plugins: {
-                        legend: {
-                          display: false
                         },
                         tooltip: {
                           backgroundColor: 'rgba(17, 24, 39, 0.8)',
@@ -293,161 +381,103 @@ const SkillAnalyticsDashboard = () => {
                           cornerRadius: 6,
                           callbacks: {
                             label: function(context) {
-                              return `Proficiency: ${context.parsed.r}%`;
+                              const label = context.label || '';
+                              const value = context.parsed || 0;
+                              const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                              const percentage = Math.round((value / total) * 100);
+                              return `${label}: ${value} (${percentage}%)`;
                             }
                           }
                         }
-                      }
+                      },
+                      animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1000
+                      },
+                      cutout: '60%'
                     }}
                   />
                 ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-gray-500 dark:text-gray-400">No data available</p>
-                  </div>
+                  <p className="text-gray-500 dark:text-gray-400">No data available</p>
                 )}
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Stats and Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Skills Distribution */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-300">
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-              <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-            </svg>
-            Skills Distribution
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Breakdown of your skills by category</p>
-          <div className="h-64 flex items-center justify-center">
-            {skillsDistributionChartData ? (
-              <Pie
-                data={skillsDistributionChartData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: 'bottom',
-                      labels: {
-                        usePointStyle: true,
-                        padding: 15,
-                        font: {
-                          size: 12,
-                          weight: 'bold'
-                        }
-                      }
-                    },
-                    tooltip: {
-                      backgroundColor: 'rgba(17, 24, 39, 0.8)',
-                      titleFont: {
-                        size: 13,
-                        weight: 'bold'
-                      },
-                      bodyFont: {
-                        size: 12
-                      },
-                      padding: 10,
-                      cornerRadius: 6,
-                      callbacks: {
-                        label: function(context) {
-                          const label = context.label || '';
-                          const value = context.parsed || 0;
-                          const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
-                          const percentage = Math.round((value / total) * 100);
-                          return `${label}: ${value} (${percentage}%)`;
-                        }
-                      }
-                    }
-                  },
-                  animation: {
-                    animateScale: true,
-                    animateRotate: true,
-                    duration: 1000
-                  },
-                  cutout: '60%'
-                }}
-              />
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">No data available</p>
-            )}
-          </div>
-        </div>
+            {/* Top Skills */}
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-400">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                </svg>
+                Top Skills
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Your most important skills</p>
 
-        {/* Top Skills */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-400">
-          <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-            </svg>
-            Top Skills
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Your most important skills</p>
-
-          {analyticsData.top_skills && analyticsData.top_skills.length > 0 ? (
-            <ul className="space-y-3 mt-6">
-              {analyticsData.top_skills.map((skill, index) => (
-                <li key={index} className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-3 text-white font-bold"
-                    style={{
-                      backgroundColor:
-                        skill.category === 'frontend' ? 'rgba(124, 58, 237, 0.8)' :
-                        skill.category === 'backend' ? 'rgba(79, 70, 229, 0.8)' :
-                        'rgba(37, 99, 235, 0.8)'
-                    }}
-                  >
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-md font-semibold text-gray-800 dark:text-white">{skill.name}</h4>
-                    <div className="flex items-center mt-1">
-                      <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
-                        <div
-                          className={`h-2 rounded-full ${
-                            skill.proficiency >= 80 ? 'bg-green-500' :
-                            skill.proficiency >= 50 ? 'bg-yellow-500' :
-                            'bg-blue-500'
-                          }`}
-                          style={{ width: `${skill.proficiency || 100}%` }}
-                        ></div>
+              {analyticsData.top_skills && analyticsData.top_skills.length > 0 ? (
+                <ul className="space-y-3 mt-6">
+                  {analyticsData.top_skills.map((skill, index) => (
+                    <li key={index} className="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center mr-3 text-white font-bold"
+                        style={{
+                          backgroundColor:
+                            skill.category === 'frontend' ? 'rgba(124, 58, 237, 0.8)' :
+                            skill.category === 'backend' ? 'rgba(79, 70, 229, 0.8)' :
+                            'rgba(37, 99, 235, 0.8)'
+                        }}
+                      >
+                        {index + 1}
                       </div>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{skill.proficiency || 100}%</span>
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 capitalize mt-1">{skill.category}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-gray-500 dark:text-gray-400">No top skills available</p>
+                      <div className="flex-1">
+                        <h4 className="text-md font-semibold text-gray-800 dark:text-white">{skill.name}</h4>
+                        <div className="flex items-center mt-1">
+                          <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mr-2">
+                            <div
+                              className={`h-2 rounded-full ${
+                                skill.proficiency >= 80 ? 'bg-green-500' :
+                                skill.proficiency >= 50 ? 'bg-yellow-500' :
+                                'bg-blue-500'
+                              }`}
+                              style={{ width: `${skill.proficiency || 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{skill.proficiency || 100}%</span>
+                        </div>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 capitalize mt-1">{skill.category}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="flex items-center justify-center h-64">
+                  <p className="text-gray-500 dark:text-gray-400">No top skills available</p>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {/* Total Skills */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-500">
-        <div className="flex items-center">
-          <div className="p-4 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white mr-6 shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
+          {/* Total Skills */}
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl animate-fadeIn animation-delay-500">
+            <div className="flex items-center">
+              <div className="p-4 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white mr-6 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Total Skills: {analyticsData.total_skills}</h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {analyticsData.total_skills < 5 ? 'Keep adding more skills to improve your profile!' :
+                  analyticsData.total_skills < 10 ? 'Good progress! Continue expanding your skill set.' :
+                  'Impressive skill set! You have a diverse range of abilities.'}
+                </p>
+              </div>
+            </div>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">Total Skills: {analyticsData.total_skills}</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {analyticsData.total_skills < 5 ? 'Keep adding more skills to improve your profile!' :
-               analyticsData.total_skills < 10 ? 'Good progress! Continue expanding your skill set.' :
-               'Impressive skill set! You have a diverse range of abilities.'}
-            </p>
-          </div>
-        </div>
-      </div>
+        </>
+      ) : (
+        <StudyListComponent />
+      )}
     </div>
   );
 };

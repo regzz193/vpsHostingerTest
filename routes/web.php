@@ -28,9 +28,12 @@ Route::post('/api/profile-settings/batch', [ProfileSettingController::class, 'up
 // Skill routes
 Route::get('/api/skills', [SkillController::class, 'index']);
 Route::get('/api/skills/grouped', [SkillController::class, 'grouped']);
+Route::get('/api/skills/study-list', [SkillController::class, 'getStudyList']);
 Route::post('/api/skills', [SkillController::class, 'store']);
 Route::get('/api/skills/{id}', [SkillController::class, 'show']);
 Route::put('/api/skills/{id}', [SkillController::class, 'update']);
+Route::put('/api/skills/{id}/toggle-study', [SkillController::class, 'toggleStudyStatus']);
+Route::put('/api/skills/{id}/study-notes', [SkillController::class, 'updateStudyNotes']);
 Route::delete('/api/skills/{id}', [SkillController::class, 'destroy']);
 Route::post('/api/skills/reorder', [SkillController::class, 'reorder']);
 

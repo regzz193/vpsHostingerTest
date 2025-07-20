@@ -11,7 +11,8 @@ const SkillsManager = () => {
   const [newSkill, setNewSkill] = useState({
     name: '',
     category: 'frontend',
-    proficiency: 100
+    proficiency: 100,
+    to_study: false
   });
 
   const [editingSkill, setEditingSkill] = useState(null);
@@ -88,7 +89,8 @@ const SkillsManager = () => {
       setNewSkill({
         name: '',
         category: 'frontend',
-        proficiency: 100
+        proficiency: 100,
+        to_study: false
       });
 
       setStatus({ ...status, saving: false, success: true });
@@ -281,6 +283,22 @@ const SkillsManager = () => {
                       className="w-20 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-800 dark:text-white"
                       placeholder="Proficiency %"
                     />
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`to_study_${editingSkill.id}`}
+                        name="to_study"
+                        checked={editingSkill.to_study || false}
+                        onChange={(e) => setEditingSkill(prev => ({
+                          ...prev,
+                          to_study: e.target.checked
+                        }))}
+                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                      />
+                      <label htmlFor={`to_study_${editingSkill.id}`} className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        Add to study list
+                      </label>
+                    </div>
                     <button
                       type="button"
                       onClick={updateSkill}
@@ -299,7 +317,14 @@ const SkillsManager = () => {
                 ) : (
                   <>
                     <div className="flex flex-col">
-                      <span className="text-gray-700 dark:text-gray-200">{skill.name}</span>
+                      <div className="flex items-center">
+                        <span className="text-gray-700 dark:text-gray-200">{skill.name}</span>
+                        {skill.to_study && (
+                          <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full dark:bg-blue-900 dark:text-blue-300">
+                            Studying
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center mt-1">
                         <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2">
                           <div
@@ -416,6 +441,22 @@ const SkillsManager = () => {
                 className="w-24 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 required
               />
+            </div>
+            <div className="flex items-center self-end">
+              <input
+                type="checkbox"
+                id="to_study_new"
+                name="to_study"
+                checked={newSkill.to_study}
+                onChange={(e) => setNewSkill(prev => ({
+                  ...prev,
+                  to_study: e.target.checked
+                }))}
+                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+              />
+              <label htmlFor="to_study_new" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                Add to study list
+              </label>
             </div>
             <button
               type="submit"
