@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLogin from './AdminLogin';
 import ProfileSettings from './ProfileSettings';
+import FeaturedProjects from './FeaturedProjects';
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -122,6 +123,18 @@ const AdminDashboard = () => {
                       }`}
                     >
                       Settings
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setActiveSection('projects')}
+                      className={`w-full text-left block px-4 py-2 rounded-md ${
+                        activeSection === 'projects'
+                          ? 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-200 font-medium'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      Featured Projects
                     </button>
                   </li>
                   <li>
@@ -248,8 +261,10 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : activeSection === 'settings' ? (
               <ProfileSettings />
+            ) : (
+              <FeaturedProjects />
             )}
           </div>
         </div>

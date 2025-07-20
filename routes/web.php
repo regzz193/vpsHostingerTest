@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileSettingController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\FeaturedProjectController;
 
 Route::view('/', 'welcome');
 Route::view('/me-administrator', 'admin');
@@ -27,5 +28,13 @@ Route::get('/api/skills/{id}', [SkillController::class, 'show']);
 Route::put('/api/skills/{id}', [SkillController::class, 'update']);
 Route::delete('/api/skills/{id}', [SkillController::class, 'destroy']);
 Route::post('/api/skills/reorder', [SkillController::class, 'reorder']);
+
+// Featured Project routes
+Route::get('/api/featured-projects', [FeaturedProjectController::class, 'index']);
+Route::post('/api/featured-projects', [FeaturedProjectController::class, 'store']);
+Route::get('/api/featured-projects/{id}', [FeaturedProjectController::class, 'show']);
+Route::put('/api/featured-projects/{id}', [FeaturedProjectController::class, 'update']);
+Route::delete('/api/featured-projects/{id}', [FeaturedProjectController::class, 'destroy']);
+Route::post('/api/featured-projects/reorder', [FeaturedProjectController::class, 'reorder']);
 
 //testing asdasd
