@@ -73,7 +73,15 @@ const SkillsManager = () => {
     setStatus({ ...status, saving: true, success: false, error: null });
 
     try {
-      const response = await axios.post('/api/skills', newSkill);
+      // Ensure study_notes is a string if it exists
+      const skillToCreate = { ...newSkill };
+      if (skillToCreate.study_notes === null || skillToCreate.study_notes === undefined) {
+        skillToCreate.study_notes = '';
+      } else if (typeof skillToCreate.study_notes !== 'string') {
+        skillToCreate.study_notes = String(skillToCreate.study_notes);
+      }
+
+      const response = await axios.post('/api/skills', skillToCreate);
 
       // Update local state
       setSkills(prev => {
@@ -122,10 +130,18 @@ const SkillsManager = () => {
       return;
     }
 
+    // Ensure study_notes is a string before sending to the API
+    const skillToUpdate = { ...editingSkill };
+    if (skillToUpdate.study_notes === null || skillToUpdate.study_notes === undefined) {
+      skillToUpdate.study_notes = '';
+    } else if (typeof skillToUpdate.study_notes !== 'string') {
+      skillToUpdate.study_notes = String(skillToUpdate.study_notes);
+    }
+
     setStatus({ ...status, saving: true, success: false, error: null });
 
     try {
-      const response = await axios.put(`/api/skills/${editingSkill.id}`, editingSkill);
+      const response = await axios.put(`/api/skills/${editingSkill.id}`, skillToUpdate);
 
       // If category changed, we need to refetch all skills to get the correct order
       if (response.data.data.category !== editingSkill.category) {

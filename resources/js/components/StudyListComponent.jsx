@@ -148,10 +148,15 @@ const StudyListComponent = () => {
       }
 
       // Use the general update endpoint instead of the dedicated proficiency endpoint
-      const response = await axios.put(`/api/skills/${id}`, {
-        ...skill,
-        proficiency: newProficiency
-      });
+      // Ensure study_notes is a string before sending to the API
+      const skillToUpdate = { ...skill, proficiency: newProficiency };
+      if (skillToUpdate.study_notes === null || skillToUpdate.study_notes === undefined) {
+        skillToUpdate.study_notes = '';
+      } else if (typeof skillToUpdate.study_notes !== 'string') {
+        skillToUpdate.study_notes = String(skillToUpdate.study_notes);
+      }
+
+      const response = await axios.put(`/api/skills/${id}`, skillToUpdate);
 
       // Update local state
       setStudyList(prevList =>
