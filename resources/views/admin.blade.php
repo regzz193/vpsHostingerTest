@@ -21,6 +21,17 @@
                 /* Fallback styles if needed */
             </style>
         @endif
+
+        <style>
+            /* Custom animations */
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 0.3s ease-out forwards;
+            }
+        </style>
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18]">
         <div id="admin-app"></div>
