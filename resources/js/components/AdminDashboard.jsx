@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminLogin from './AdminLogin';
 import FeaturedProjects from './FeaturedProjects';
 import AnalyticsDashboard from './AnalyticsDashboard';
+import SkillAnalyticsDashboard from './SkillAnalyticsDashboard';
 import SkillsSection from './SkillsSection';
 import SkillsManager from './SkillsManager';
 
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState('inbox');
   const [profileSubSection, setProfileSubSection] = useState('contact');
+  const [analyticsSubSection, setAnalyticsSubSection] = useState('visitors');
 
   // Profile settings state
   const [profileSettings, setProfileSettings] = useState({
@@ -868,11 +870,48 @@ const AdminDashboard = () => {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
                     </svg>
-                    Visitor Analytics
+                    Analytics Dashboard
                   </h2>
                 </div>
+
+                <div className="border-b border-gray-200 dark:border-gray-700">
+                  <nav className="flex -mb-px">
+                    <button
+                      onClick={() => setAnalyticsSubSection('visitors')}
+                      className={`py-4 px-6 text-center border-b-2 font-medium text-sm flex items-center ${
+                        analyticsSubSection === 'visitors'
+                          ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      }`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                      </svg>
+                      Visitor Analytics
+                    </button>
+                    <button
+                      onClick={() => setAnalyticsSubSection('skills')}
+                      className={`py-4 px-6 text-center border-b-2 font-medium text-sm flex items-center ${
+                        analyticsSubSection === 'skills'
+                          ? 'border-purple-500 text-purple-600 dark:text-purple-400'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      }`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                      </svg>
+                      Skill Analytics
+                    </button>
+                  </nav>
+                </div>
+
                 <div className="p-6">
-                  <AnalyticsDashboard />
+                  {analyticsSubSection === 'visitors' ? (
+                    <AnalyticsDashboard />
+                  ) : (
+                    <SkillAnalyticsDashboard />
+                  )}
                 </div>
               </div>
             ) : (

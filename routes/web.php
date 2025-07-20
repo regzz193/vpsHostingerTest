@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileSettingController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\FeaturedProjectController;
 use App\Http\Controllers\VisitorAnalyticsController;
+use App\Http\Controllers\SkillAnalyticsController;
 
 Route::view('/', 'welcome');
 Route::view('/me-administrator', 'admin');
@@ -44,5 +45,8 @@ Route::post('/api/featured-projects/reorder', [FeaturedProjectController::class,
 // Visitor Analytics routes
 Route::post('/api/analytics/track', [VisitorAnalyticsController::class, 'track']);
 Route::get('/api/analytics', [VisitorAnalyticsController::class, 'index']);
+
+// Skill Analytics routes
+Route::get('/api/skill-analytics', [SkillAnalyticsController::class, 'getAnalytics']);
 
 //testing asdasd
