@@ -110,7 +110,7 @@ const StudyListComponent = () => {
     setStatus({ ...status, saving: true, success: false, error: null });
 
     try {
-      const response = await axios.put(`/api/skills/${id}`, {
+      const response = await axios.put(`/api/skills/${id}/proficiency`, {
         proficiency: newProficiency
       });
 

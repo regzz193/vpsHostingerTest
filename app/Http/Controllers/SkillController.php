@@ -206,4 +206,31 @@ class SkillController extends Controller
             'data' => $skill
         ]);
     }
+
+    /**
+     * Update proficiency for a skill.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProficiency(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'proficiency' => 'required|integer|min:1|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $skill = Skill::findOrFail($id);
+        $skill->proficiency = $request->proficiency;
+        $skill->save();
+
+        return response()->json([
+            'message' => 'Proficiency updated successfully',
+            'data' => $skill
+        ]);
+    }
 }

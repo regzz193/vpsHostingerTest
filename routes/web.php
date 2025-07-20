@@ -34,6 +34,7 @@ Route::get('/api/skills/{id}', [SkillController::class, 'show']);
 Route::put('/api/skills/{id}', [SkillController::class, 'update']);
 Route::put('/api/skills/{id}/toggle-study', [SkillController::class, 'toggleStudyStatus']);
 Route::put('/api/skills/{id}/study-notes', [SkillController::class, 'updateStudyNotes']);
+Route::put('/api/skills/{id}/proficiency', [SkillController::class, 'updateProficiency']);
 Route::delete('/api/skills/{id}', [SkillController::class, 'destroy']);
 Route::post('/api/skills/reorder', [SkillController::class, 'reorder']);
 
