@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminLogin from './AdminLogin';
 import ProfileSettings from './ProfileSettings';
 import FeaturedProjects from './FeaturedProjects';
+import AnalyticsDashboard from './AnalyticsDashboard';
 
 const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -162,6 +163,21 @@ const AdminDashboard = () => {
                         <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                       </svg>
                       <span>Featured Projects</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setActiveSection('analytics')}
+                      className={`w-full text-left flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+                        activeSection === 'analytics'
+                          ? 'bg-gradient-to-r from-purple-50 to-indigo-50 text-purple-700 dark:from-purple-900/30 dark:to-indigo-900/30 dark:text-purple-200 font-medium shadow-sm'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 mr-3 ${activeSection === 'analytics' ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'}`} viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                      </svg>
+                      <span>Analytics</span>
                     </button>
                   </li>
                   <li className="pt-2 mt-2 border-t border-gray-200 dark:border-gray-700">
@@ -348,6 +364,20 @@ const AdminDashboard = () => {
                 </div>
                 <div className="p-6">
                   <ProfileSettings />
+                </div>
+              </div>
+            ) : activeSection === 'analytics' ? (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                    </svg>
+                    Visitor Analytics
+                  </h2>
+                </div>
+                <div className="p-6">
+                  <AnalyticsDashboard />
                 </div>
               </div>
             ) : (

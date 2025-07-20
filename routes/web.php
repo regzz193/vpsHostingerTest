@@ -5,6 +5,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileSettingController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\FeaturedProjectController;
+use App\Http\Controllers\VisitorAnalyticsController;
 
 Route::view('/', 'welcome');
 Route::view('/me-administrator', 'admin');
@@ -36,5 +37,9 @@ Route::get('/api/featured-projects/{id}', [FeaturedProjectController::class, 'sh
 Route::put('/api/featured-projects/{id}', [FeaturedProjectController::class, 'update']);
 Route::delete('/api/featured-projects/{id}', [FeaturedProjectController::class, 'destroy']);
 Route::post('/api/featured-projects/reorder', [FeaturedProjectController::class, 'reorder']);
+
+// Visitor Analytics routes
+Route::post('/api/analytics/track', [VisitorAnalyticsController::class, 'track']);
+Route::get('/api/analytics', [VisitorAnalyticsController::class, 'index']);
 
 //testing asdasd

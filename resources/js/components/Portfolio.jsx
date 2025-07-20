@@ -188,7 +188,7 @@ const DeveloperBadge = () => {
       };
     } else {
       return {
-        level: 'Senior Developer',
+        level: 'Experienced Developer',
         gradient: 'from-purple-400 to-purple-600',
         textColor: 'text-white',
         bgColor: 'bg-gradient-to-r from-purple-400 to-purple-600',
@@ -258,7 +258,7 @@ const Portfolio = () => {
       setScrolled(window.scrollY > 50);
 
       // Determine active section based on scroll position
-      const sections = ['home', 'about', 'skills', 'projects', 'blog', 'contact'];
+      const sections = ['home', 'about', 'experience', 'skills', 'projects', 'blog', 'contact'];
       const sectionElements = sections.map(id => document.getElementById(id));
 
       const currentSection = sectionElements.reduce((acc, section) => {
@@ -289,7 +289,22 @@ const Portfolio = () => {
   useEffect(() => {
     fetchSettings();
     fetchSkills();
+
+    // Track page visit
+    trackPageVisit();
   }, []);
+
+  // Track page visit for analytics
+  const trackPageVisit = async () => {
+    try {
+      await axios.post('/api/analytics/track', {
+        page: window.location.pathname
+      });
+      console.log('Page visit tracked successfully');
+    } catch (error) {
+      console.error('Error tracking page visit:', error);
+    }
+  };
 
   const fetchSettings = async () => {
     try {
@@ -346,7 +361,7 @@ const Portfolio = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              {['home', 'about', 'skills', 'projects', 'blog', 'contact'].map((item) => (
+              {['home', 'about', 'experience', 'skills', 'projects', 'blog', 'contact'].map((item) => (
                 <a
                   key={item}
                   href={`#${item}`}
@@ -401,7 +416,7 @@ const Portfolio = () => {
             aria-hidden={!isNavOpen}
           >
             <div className="flex flex-col space-y-4">
-              {['home', 'about', 'skills', 'projects', 'blog', 'contact'].map((item) => (
+              {['home', 'about', 'experience', 'skills', 'projects', 'blog', 'contact'].map((item) => (
                 <a
                   key={item}
                   href={`#${item}`}
@@ -592,6 +607,138 @@ const Portfolio = () => {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* Professional Experience Section */}
+      <section id="experience" className="py-16 md:py-24 bg-gradient-to-br from-gray-100 to-white dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-purple-200/20 to-indigo-200/20 dark:from-purple-900/10 dark:to-indigo-900/10 rounded-full blur-3xl -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-indigo-200/20 to-purple-200/20 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-full blur-3xl -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
+
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white inline-block relative">
+              <span className="relative z-10">Professional Experience</span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-indigo-100 dark:bg-indigo-900/30 -z-10 transform rotate-1"></span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">
+              A showcase of my professional journey and the expertise I've developed along the way.
+            </p>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            {/* Experience Cards with Modern Design */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Experience Item 1 */}
+              <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                <div className="flex flex-col">
+                  {/* Company info */}
+                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6 flex flex-col items-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-1">Full Stack Developer</h3>
+                      <div className="text-indigo-100 font-medium mb-4">TechInnovate Solutions</div>
+                      <div className="text-sm text-indigo-100">2023 - Present</div>
+                    </div>
+                    <div className="mt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="p-6 md:p-8">
+                    <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Full Stack Development & Team Leadership</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                      Led the development of enterprise-level web applications using React, Laravel, and AWS. Implemented CI/CD pipelines that reduced deployment time by 40% and improved code quality through automated testing.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300 text-xs font-medium rounded-full">React</span>
+                      <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">Laravel</span>
+                      <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">AWS</span>
+                      <span className="px-3 py-1 bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300 text-xs font-medium rounded-full">Team Leadership</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Experience Item 2 */}
+              <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                <div className="flex flex-col">
+                  {/* Company info */}
+                  <div className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white p-6 flex flex-col items-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-1">Web Developer</h3>
+                      <div className="text-blue-100 font-medium mb-4">Digital Creations Agency</div>
+                      <div className="text-sm text-blue-100">2022 - 2023</div>
+                    </div>
+                    <div className="mt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="p-6 md:p-8">
+                    <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Frontend Development & UI/UX Implementation</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                      Developed responsive web applications for various clients, focusing on creating intuitive user interfaces and seamless user experiences. Collaborated with designers to transform concepts into functional, visually appealing websites.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300 text-xs font-medium rounded-full">JavaScript</span>
+                      <span className="px-3 py-1 bg-cyan-100 text-cyan-600 dark:bg-cyan-900/40 dark:text-cyan-300 text-xs font-medium rounded-full">Tailwind CSS</span>
+                      <span className="px-3 py-1 bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300 text-xs font-medium rounded-full">Vue.js</span>
+                      <span className="px-3 py-1 bg-purple-100 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300 text-xs font-medium rounded-full">UI/UX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Experience Item 3 */}
+              <div className="group bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                <div className="flex flex-col">
+                  {/* Company info */}
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-6 flex flex-col items-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold mb-1">Junior Developer</h3>
+                      <div className="text-emerald-100 font-medium mb-4">StartUp Innovations</div>
+                      <div className="text-sm text-emerald-100">2021 - 2022</div>
+                    </div>
+                    <div className="mt-6">
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="p-6 md:p-8">
+                    <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Full Stack Development & Learning</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                      Assisted in developing web applications using PHP and JavaScript. Gained hands-on experience with database design, API integration, and responsive web development while working in an agile environment.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300 text-xs font-medium rounded-full">PHP</span>
+                      <span className="px-3 py-1 bg-teal-100 text-teal-600 dark:bg-teal-900/40 dark:text-teal-300 text-xs font-medium rounded-full">MySQL</span>
+                      <span className="px-3 py-1 bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300 text-xs font-medium rounded-full">jQuery</span>
+                      <span className="px-3 py-1 bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300 text-xs font-medium rounded-full">Responsive Design</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
